@@ -1,0 +1,11 @@
+- .venv/**
++ **.txt
++ **.py
++ **.yaml
++ **.toml
++ **.sh
++ **.json
++ **.pt
++ **.yml
++ Dockerfile
+- *
