@@ -6,13 +6,7 @@ requires-python = "==3.10.16"
 
 dependencies = [
     "torch==2.4.0",
-    "vllm==0.6.1",
     "transformers==4.48.0",
-    "evaluate==0.4.3",
-    "rouge-score==0.1.2",
-    "nltk==3.9.1",
-    "wandb==0.18.5",
-    "typed-argument-parser==1.10.1",
 ]
 
 [tool.ruff]
