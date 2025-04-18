@@ -1,0 +1,62 @@
+apiVersion: batch/v1
+kind: Job
+
+metadata:
+  labels:
+    app: k8s-setup-template
+  name: viyer9-test
+
+spec:
+  template:
+    spec:
+      containers:
+      - name: template-runner
+        image: gitlab-registry.nrp-nautilus.io/varuniyer/k8s-setup-template:latest
+        env:
+        - name: S3_PATH
+          valueFrom:
+            secretKeyRef:
+              name: viyer9-ceph-s3
+              key: s3_path
+        - name: ACCESS_KEY_ID
+          valueFrom:
+            secretKeyRef:
+              name: viyer9-ceph-s3
+              key: access_key_id
+        - name: SECRET_ACCESS_KEY_ID
+          valueFrom:
+            secretKeyRef:
+              name: viyer9-ceph-s3
+              key: secret_access_key_id
+
+        - name: HF_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: viyer9-hf
+              key: api_key
+        
+        - name: TOKENIZERS_PARALLELISM
+          value: "true"
+        
+        command: ["bash", "-c"]
+        args:
+        - |
+          rclone config create nautilus s3 provider=Ceph access_key_id=$ACCESS_KEY_ID secret_access_key=$SECRET_ACCESS_KEY_ID endpoint=http://rook-ceph-rgw-centrals3.rook-central > /dev/null
+          rclone copy $S3_PATH/k8s_setup-template . --progress
+          
+          python test_script.py
+        resources:
+          limits:
+            nvidia.com/rtxa6000: "1"
+            memory: 16Gi
+            cpu: "2"
+            ephemeral-storage: 100Gi
+          requests:
+            nvidia.com/rtxa6000: "1"
+            memory: 16Gi
+            cpu: "2"
+            ephemeral-storage: 100Gi
+
+      restartPolicy: Never
+  
+  backoffLimit: 0
