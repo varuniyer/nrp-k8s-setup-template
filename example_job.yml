@@ -47,15 +47,15 @@ spec:
           python test_script.py
         resources:
           limits:
-            nvidia.com/rtxa6000: "1"
-            memory: 16Gi
-            cpu: "2"
-            ephemeral-storage: 100Gi
+            nvidia.com/gpu: "1"
+            memory: 2Gi
+            cpu: "1"
+            ephemeral-storage: 4Gi
           requests:
-            nvidia.com/rtxa6000: "1"
-            memory: 16Gi
-            cpu: "2"
-            ephemeral-storage: 100Gi
+            nvidia.com/gpu: "1"
+            memory: 2Gi
+            cpu: "1"
+            ephemeral-storage: 4Gi
 
       restartPolicy: Never
   
