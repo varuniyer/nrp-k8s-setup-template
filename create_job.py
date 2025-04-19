@@ -35,11 +35,12 @@ def main():
     args = parser.parse_args()
 
     # Create the job file from template
+    repo_name_lower = args.repo_name.lower()
     template_vars = {
         "netid": args.netid,
         "gitlab_username": args.gitlab_username,
         "repo_name": args.repo_name,
-        "repo_name_lower": args.repo_name.lower(),  # Add lowercase version for registry paths
+        "repo_name_lower": repo_name_lower,  # Add lowercase version for registry paths
         "branch_name": args.branch_name,
     }
 
@@ -66,11 +67,11 @@ def main():
         "create",
         "secret",
         "docker-registry",
-        f"{args.netid}-{args.repo_name.lower()}-regcred",
+        f"{args.netid}-{repo_name_lower}-regcred",
         "--docker-server=gitlab-registry.nrp-nautilus.io/"
         + args.gitlab_username
         + "/"
-        + args.repo_name.lower(),
+        + repo_name_lower,
         "--docker-username=" + args.deploy_token_username,
         "--docker-password=" + args.deploy_token_password,
     ]
