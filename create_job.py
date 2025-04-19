@@ -33,9 +33,8 @@ def main():
     )
 
     args = parser.parse_args()
-
-    # Create the job file from template
     repo_name_lower = args.repo_name.lower()
+
     template_vars = {
         "netid": args.netid,
         "gitlab_username": args.gitlab_username,
