@@ -3,31 +3,31 @@ kind: Job
 
 metadata:
   labels:
-    app: k8s-setup-template
-  name: viyer9-test
+    app: "{repo_name}"
+  name: "{netid}-test"
 
 spec:
   template:
     spec:
       containers:
       - name: template-runner
-        image: gitlab-registry.nrp-nautilus.io/varuniyer/k8s-setup-template:latest
+        image: gitlab-registry.nrp-nautilus.io/{gitlab_username}/{repo_name_lower}:latest
         env:
         - name: GIT_USERNAME
           valueFrom:
             secretKeyRef:
-              name: viyer9-gitlab
+              name: "{netid}-gitlab"
               key: user
         - name: GIT_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: viyer9-gitlab
+              name: "{netid}-gitlab"
               key: password
         
         command: ["bash", "-c"]
         args:
         - |
-          cd k8s-setup-template
+          cd {repo_name}
           python test_script.py
         resources:
           limits:
@@ -46,20 +46,20 @@ spec:
         args:
           - clone
           - -b
-          - main
+          - {branch_name}
           - --single-branch
-          - https://$(GIT_USERNAME):$(GIT_PASSWORD)@gitlab.nrp-nautilus.io/varuniyer/k8s-setup-template
-          - /home/user/work/k8s-setup-template
+          - https://$(GIT_USERNAME):$(GIT_PASSWORD)@gitlab.nrp-nautilus.io/{gitlab_username}/{repo_name}
+          - /home/user/work/{repo_name}
         volumeMounts:
           - name: git-repo
             mountPath: /home/user/work
       volumes:
       - name: git-repo
-        emptyDir: {}
+        emptyDir: {{}}
 
       imagePullSecrets:
-      - name: viyer9-k8s-setup-template-regcred
+      - name: "{netid}-{repo_name_lower}-regcred"
 
       restartPolicy: Never
   
-  backoffLimit: 0
+  backoffLimit: 0 
