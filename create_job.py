@@ -46,10 +46,7 @@ def main():
     job_content = Path("template_job.yml").read_text().format(**template_vars)
     Path(args.output).write_text(job_content)
 
-    print(f"\nSuccessfully created {args.output} with:")
-    print(f"  NetID: {args.netid}")
-    print(f"  GitLab username: {args.gitlab_username}")
-    print(f"  Repository name: {args.repo_name}")
+    print(f"\nSuccessfully created {args.output}")
 
     print("\nCreating GitLab authentication secrets...")
     gitlab_cmd = [
