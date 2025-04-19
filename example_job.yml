@@ -56,6 +56,10 @@ spec:
       volumes:
       - name: git-repo
         emptyDir: {}
+
+      imagePullSecrets:
+      - name: viyer9-k8s-setup-template-regcred
+
       restartPolicy: Never
   
   backoffLimit: 0
