@@ -7,8 +7,8 @@
 You can (privately) fork this repo to get started. Afterwards, follow these steps:
 
 1. Add your desired python version and dependencies to `pyproject.toml`.
-2. Replace
-    - `viyer9` in `example_job.yml` with your own NetID
+2. In `example_job.yml`, replace
+    - `viyer9` with your own NetID
     - `varuniyer` with your gitlab username when referring to the [image](https://gitlab.nrp-nautilus.io/varuniyer/k8s-setup-template/-/blob/main/example_job.yml?ref_type=heads#L14) or the [repo](https://gitlab.nrp-nautilus.io/varuniyer/k8s-setup-template/-/blob/main/example_job.yml?ref_type=heads#L51)
     - `k8s-setup-template` with the name of your fork
 3. Create the GitLab authentication secrets with the command: `kubectl create secret generic NetID-gitlab --from-literal=user=USERNAME --from-literal=password=TOKEN`

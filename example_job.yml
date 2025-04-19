@@ -31,12 +31,12 @@ spec:
           python test_script.py
         resources:
           limits:
-            nvidia.com/gpu: "0"
+            nvidia.com/gpu: "1"
             memory: 2Gi
             cpu: "1"
             ephemeral-storage: 4Gi
           requests:
-            nvidia.com/gpu: "0"
+            nvidia.com/gpu: "1"
             memory: 2Gi
             cpu: "1"
             ephemeral-storage: 4Gi
