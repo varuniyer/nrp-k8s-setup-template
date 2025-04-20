@@ -18,18 +18,18 @@ def main():
         "--branch-name", default="main", help="Name of the branch to create the job on"
     )
     parser.add_argument(
-        "--gitlab-pat", required=True, help="Your GitLab Personal Access Token"
+        "--output", required=True, help="Output file name (default: job.yml)"
+    )
+    parser.add_argument(
+        "--gitlab-pat", default="", help="Your GitLab Personal Access Token"
     )
     parser.add_argument(
         "--deploy-token-username",
-        required=True,
+        default="",
         help="GitLab deploy token username (gitlab+deploy-token-XXX)",
     )
     parser.add_argument(
-        "--deploy-token-password", required=True, help="GitLab deploy token password"
-    )
-    parser.add_argument(
-        "--output", default="job.yml", help="Output file name (default: job.yml)"
+        "--deploy-token-password", default="", help="GitLab deploy token password"
     )
 
     args = parser.parse_args()
@@ -48,33 +48,39 @@ def main():
 
     print(f"\nSuccessfully created {args.output}")
 
-    print("\nCreating GitLab authentication secrets...")
-    gitlab_cmd = [
-        "kubectl",
-        "create",
-        "secret",
-        "generic",
-        f"{args.netid}-gitlab",
-        "--from-literal=user=" + args.gitlab_username,
-        "--from-literal=password=" + args.gitlab_pat,
-    ]
-    run(gitlab_cmd, check=True)
+    if args.gitlab_pat:
+        print("\nCreating GitLab authentication secrets...")
+        gitlab_pat_cmd = [
+            "kubectl",
+            "create",
+            "secret",
+            "generic",
+            f"{args.netid}-gitlab",
+            "--from-literal=user=" + args.gitlab_username,
+            "--from-literal=password=" + args.gitlab_pat,
+        ]
+        run(gitlab_pat_cmd, check=True)
+    else:
+        print("\nSkipping GitLab authentication secrets since no PAT was provided")
 
-    print("\nCreating registry secret...")
-    registry_cmd = [
-        "kubectl",
-        "create",
-        "secret",
-        "docker-registry",
-        f"{args.netid}-{repo_name_lower}-regcred",
-        "--docker-server=gitlab-registry.nrp-nautilus.io/"
-        + args.gitlab_username
-        + "/"
-        + repo_name_lower,
-        "--docker-username=" + args.deploy_token_username,
-        "--docker-password=" + args.deploy_token_password,
-    ]
-    run(registry_cmd, check=True)
+    if args.deploy_token_username and args.deploy_token_password:
+        print("\nCreating registry secret...")
+        registry_cmd = [
+            "kubectl",
+            "create",
+            "secret",
+            "docker-registry",
+            f"{args.netid}-{repo_name_lower}-regcred",
+            "--docker-server=gitlab-registry.nrp-nautilus.io/"
+            + args.gitlab_username
+            + "/"
+            + repo_name_lower,
+            "--docker-username=" + args.deploy_token_username,
+            "--docker-password=" + args.deploy_token_password,
+        ]
+        run(registry_cmd, check=True)
+    else:
+        print("\nSkipping registry secret since no deploy token was provided")
 
     print("\nSetup complete! You can now run your job with:")
     print(f"kubectl create -f {args.output}")
