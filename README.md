@@ -40,7 +40,7 @@ When changing `your_job.yml`, be careful to only change the first set of request
 
 ### How can I get multi-GPU support?
 
-Install `libnccl2` in the the first layer of the Dockerfile (next to `git`).
+Install `libnccl2` in the [`Dockerfile`](https://gitlab.nrp-nautilus.io/varuniyer/k8s-setup-template/-/blob/main/Dockerfile?ref_type=heads#L8) (next to `git`).
 
 ### Why do you not include configuration for a PVC (to use with CephFS) or `rclone` (to use with Ceph S3)?
 
