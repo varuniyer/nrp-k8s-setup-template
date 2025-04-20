@@ -29,6 +29,9 @@ spec:
         - |
           cd {repo_name}
           python test_script.py
+        volumeMounts:
+          - name: git-repo
+            mountPath: /home/user/work/{repo_name}
         resources:
           limits:
             nvidia.com/gpu: "1"
@@ -49,10 +52,17 @@ spec:
           - {branch_name}
           - --single-branch
           - https://$(GIT_USERNAME):$(GIT_PASSWORD)@gitlab.nrp-nautilus.io/{gitlab_username}/{repo_name}
-          - /home/user/work/{repo_name}
+          - /opt/{repo_name}
+        resources:
+          limits:
+            memory: 100Mi
+            cpu: "100m"
+          requests:
+            memory: 100Mi
+            cpu: "100m"
         volumeMounts:
           - name: git-repo
-            mountPath: /home/user/work
+            mountPath: /opt/{repo_name}
       volumes:
       - name: git-repo
         emptyDir: {{}}
