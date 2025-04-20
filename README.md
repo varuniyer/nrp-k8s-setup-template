@@ -22,11 +22,21 @@ You can (privately) fork this repo to get started. Afterwards, follow these step
 
 4. Adjust `test_script.py` to suit your needs. If you want to pass in arguments, do so in `your_job.yml`.
 5. If you would like to develop and test code locally, install and use [`uv`](https://docs.astral.sh/uv/getting-started/installation/). Open your terminal, `cd` into this project\'s directory, and run `uv sync`. This will create a virtualenv in `.venv` containing all project dependencies.
-    - You may update dependencies later on using the same command. After updating dependencies, commit and push the changes to `pyproject.toml` to build a new image. You can track the new build\'s progress in the sidebar \"Build\" -> \"Jobs\".
+    - You may update Python dependencies later on using the same command. After updating dependencies, commit and push the changes to `pyproject.toml` to build a new image. You can track the new build\'s progress in the sidebar \"Build\" -> \"Jobs\".
 6. Once your changes are complete, push them to `BranchName`.
 7. Finally, run the job with the following command: `kubectl create -f your_job.yml`
 
 ## FAQ
+
+### Which files should I be changing for my own project?
+
+Consider the following files:
+- `test_script.py` is run when the job is executed.
+- `pyproject.toml` contains Python dependencies.
+- `Dockerfile` is used to build the Docker image.
+- `your_job.yml` specifies the K8s job configuration.
+
+When changing `your_job.yml`, be careful to only change the first set of requests and limits. You will likely need to replace `python test_script.py` with the command you want to run. Otherwise, you should not need to change the K8s job configuration. The dependencies in `pyproject.toml` and the `Dockerfile` may be updated as needed (see Step 5 for additional details).
 
 ### How can I get multi-GPU support?
 
