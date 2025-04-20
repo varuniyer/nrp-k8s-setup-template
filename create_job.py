@@ -7,7 +7,7 @@ from subprocess import run
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Create a Kubernetes job from template with user-specific values"
+        description="Fills in template_job.yml with user-specified values"
     )
     parser.add_argument("--netid", required=True, help="Your NetID")
     parser.add_argument("--gitlab-username", required=True, help="Your GitLab username")
@@ -61,7 +61,7 @@ def main():
         ]
         run(gitlab_pat_cmd, check=True)
     else:
-        print("\nSkipping GitLab authentication secrets since no PAT was provided")
+        print("\nSkipping GitLab authentication secret since no PAT was provided")
 
     if args.deploy_token_username and args.deploy_token_password:
         print("\nCreating registry secret...")
