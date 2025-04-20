@@ -42,9 +42,9 @@ When changing `your_job.yml`, be careful to only change the first set of request
 
 Install `libnccl2` in the [`Dockerfile`](https://gitlab.nrp-nautilus.io/varuniyer/k8s-setup-template/-/blob/main/Dockerfile?ref_type=heads#L8) (next to `git`).
 
-### Why do you not include configuration for a PVC (to use with CephFS) or `rclone` (to use with Ceph S3)?
+### Why not include configuration for a PVC (to use with CephFS) or `rclone` (to use with Ceph S3)?
 
-Unfortunatly, the Ceph volumes offered by the NRP have several usage restrictions. Notably, even accidentally storing python dependencies in Ceph may result in a temporary ban from accessing Nautilus resources. Moreover, HuggingFace can be used to efficiently store both [datasets](https://huggingface.co/docs/datasets/en/create_dataset) and [model checkpoints](https://huggingface.co/docs/huggingface_hub/en/guides/upload). Performance can be logged using [wandb](https://docs.wandb.ai/) or [Comet](https://www.comet.com/docs/). As such, this template does not support NRP-provided storage.
+Unfortunately, the Ceph volumes offered by the NRP have several usage restrictions. Notably, even accidentally storing python dependencies in Ceph may result in a temporary ban from accessing Nautilus resources. Moreover, HuggingFace can be used to efficiently store both [datasets](https://huggingface.co/docs/datasets/en/create_dataset) and [model checkpoints](https://huggingface.co/docs/huggingface_hub/en/guides/upload). Performance can be logged using [wandb](https://docs.wandb.ai/) or [Comet](https://www.comet.com/docs/). As such, this template does not support NRP-provided storage.
 
 ### Will I need to wait for the CI/CD job to finish after each pushed commit for my next K8s job to access new code?
 
