@@ -25,3 +25,17 @@ You can (privately) fork this repo to get started. Afterwards, follow these step
     - You may update dependencies later on using the same command. After updating dependencies, commit and push the changes to `pyproject.toml` to build a new image. You can track the new build\'s progress in the sidebar \"Build\" -> \"Jobs\".
 6. Once your changes are complete, push them to `BranchName`.
 7. Finally, run the job with the following command: `kubectl create -f your_job.yml`
+
+## FAQ
+
+### How can I get multi-GPU support?
+
+You can get multi-GPU support by installing `libnccl2` in the the first layer of the Dockerfile (next to `git`).
+
+### Why do you not include configuration for a PVC (to use with CephFS) or `rclone` (to use with Ceph S3)?
+
+Unfortunatly, the Ceph volumes offered by the NRP have several usage restrictions. Notably, even accidentally storing python dependencies in Ceph may result in a temporary ban from accessing Nautilus resources. Moreover, HuggingFace can be used to efficiently store both [datasets](https://huggingface.co/docs/datasets/en/create_dataset) and [model checkpoints](https://huggingface.co/docs/huggingface_hub/en/guides/upload). Performance can be logged using [wandb](https://docs.wandb.ai/) or [Comet](https://www.comet.com/docs/). As such, this template does not support NRP-provided storage.
+
+### Will I need to wait for the CI/CD job to finish after each pushed commit to access new code?
+
+No, the K8s job will pull the latest code from the `BranchName` branch of your fork. You only need to wait for the CI/CD job to finish after updating the dependencies in `pyproject.toml` or the `Dockerfile`.
