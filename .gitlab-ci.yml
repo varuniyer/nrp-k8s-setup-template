@@ -4,6 +4,7 @@ stages:
 - build-and-push
 
 build-and-push-job:
+  timeout: 2h
   stage: build-and-push
   variables:
     GODEBUG: "http2client=0"
