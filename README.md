@@ -17,8 +17,8 @@ You can (privately) fork this repo to get started. Afterwards, follow these step
     - `GitLabPAT` is the Personal Access Token you created in step 1
     - `DeployTokenUsername` is the username of the deploy token you created in step 2
     - `DeployTokenPassword` is the password of the deploy token you created in step 2
-    - do not pass in `--gitlab-pat` if you already created the secret `NetID-gitlab`
-    - do not pass in `--deploy-token-username` and `--deploy-token-password` if you already created the secret `NetID-RepoName-regcred`
+    - Do not pass in `--gitlab-pat` if you already created the secret `NetID-gitlab`
+    - Do not pass in `--deploy-token-username` or `--deploy-token-password` if you already created the secret `NetID-RepoName-regcred`
 
 4. Adjust `test_script.py` to suit your needs. If you want to pass in arguments, do so in `your_job.yml`.
 5. If you would like to develop and test code locally, install and use [`uv`](https://docs.astral.sh/uv/getting-started/installation/). Open your terminal, `cd` into this project\'s directory, and run `uv sync`. This will create a virtualenv in `.venv` containing all project dependencies.
