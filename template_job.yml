@@ -24,7 +24,7 @@ spec:
               name: "{gitlab_secret}"
               key: password
         
-        command: ["bash", "/home/user/work/{repo}/run.sh"]
+        command: ["bash", "run.sh"]
         workingDir: "/home/user/work/{repo}"
         volumeMounts:
           - name: git-repo
