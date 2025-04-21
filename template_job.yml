@@ -3,15 +3,15 @@ kind: Job
 
 metadata:
   labels:
-    app: "{repo_name}"
-  name: "{netid}-test"
+    app: "{repo}"
+  name: "{netid}-{repo_lower}"
 
 spec:
   template:
     spec:
       containers:
       - name: template-runner
-        image: gitlab-registry.nrp-nautilus.io/{gitlab_username}/{repo_name_lower}:latest
+        image: gitlab-registry.nrp-nautilus.io/{username}/{repo_lower}:latest
         env:
         - name: GIT_USERNAME
           valueFrom:
@@ -24,14 +24,11 @@ spec:
               name: "{netid}-gitlab"
               key: password
         
-        command: ["bash", "-c"]
-        args:
-        - |
-          cd {repo_name}
-          python test_script.py
+        command: ["sh", "/home/user/work/{repo}/run.sh"]
+        workingDir: "/home/user/work/{repo}"
         volumeMounts:
           - name: git-repo
-            mountPath: /home/user/work/{repo_name}
+            mountPath: /home/user/work/{repo}
         resources:
           limits:
             nvidia.com/gpu: "1"
@@ -49,10 +46,10 @@ spec:
         args:
           - clone
           - -b
-          - {branch_name}
+          - {branch}
           - --single-branch
-          - https://$(GIT_USERNAME):$(GIT_PASSWORD)@gitlab.nrp-nautilus.io/{gitlab_username}/{repo_name}
-          - /opt/{repo_name}
+          - https://$(GIT_USERNAME):$(GIT_PASSWORD)@gitlab.nrp-nautilus.io/{username}/{repo}
+          - /opt/{repo}
         resources:
           limits:
             memory: 100Mi
@@ -62,13 +59,13 @@ spec:
             cpu: "100m"
         volumeMounts:
           - name: git-repo
-            mountPath: /opt/{repo_name}
+            mountPath: /opt/{repo}
       volumes:
       - name: git-repo
         emptyDir: {{}}
 
       imagePullSecrets:
-      - name: "{netid}-{repo_name_lower}-regcred"
+      - name: "{netid}-{repo_lower}-regcred"
 
       restartPolicy: Never
   

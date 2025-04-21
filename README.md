@@ -10,7 +10,7 @@ First, (privately) fork this repo. Then follow these steps:
 
 1. Create a [Personal Access Token](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html) with the `read_repository` scope.
 2. Create a [deploy token](https://docs.gitlab.com/ce/user/project/deploy_tokens/) with the `read_registry` scope.
-3. Run `python create_job.py --netid NetID --gitlab-username GitLabUsername --repo-name RepoName --branch-name BranchName --output your_job.yml --gitlab-pat GitLabPAT --deploy-token-username DeployTokenUsername --deploy-token-password DeployTokenPassword`
+3. Run `python create_job.py --netid NetID --username GitLabUsername --repo RepoName --branch BranchName --output your_job.yml --pat GitLabPAT --dt-username DeployTokenUsername --dt-password DeployTokenPassword`
     - `NetID` is your NetID
     - `GitLabUsername` is your gitlab username
     - `RepoName` is the name of your fork
@@ -19,12 +19,12 @@ First, (privately) fork this repo. Then follow these steps:
     - `GitLabPAT` is the Personal Access Token you created in step 1
     - `DeployTokenUsername` is the username of the deploy token you created in step 2
     - `DeployTokenPassword` is the password of the deploy token you created in step 2
-    - Do not pass in `--gitlab-pat` if you already created the secret `NetID-gitlab`
-    - Do not pass in `--deploy-token-username` or `--deploy-token-password` if you already created the secret `NetID-RepoName-regcred`
+    - Do not pass in `--pat` if you already created the secret `NetID-gitlab`
+    - Do not pass in `--dt-username` or `--dt-password` if you already created the secret `NetID-RepoName-regcred`
 
 4. Install and use [`uv`](https://docs.astral.sh/uv/getting-started/installation/) for local development. Run `uv sync`. Initially, this will create a virtualenv in `.venv` containing all project dependencies.
     - You may update Python dependencies in `pyproject.toml` and run `uv sync` again to update the virtualenv. After updating dependencies, commit and push your changes to build a new image. You can track the new build\'s progress on GitLab in the sidebar \"Build\" -> \"Jobs\".
-5. Adjust `test_script.py` to suit your needs. Modify `your_job.yml` to pass in arguments as needed.
+5. Adjust `run.sh` and `test_script.py` to suit your needs. Modify `your_job.yml` to pass in arguments as needed.
 6. Once your changes are complete, push them to `BranchName`.
 7. Finally, run the job with the following command: `kubectl create -f your_job.yml`
 
@@ -38,7 +38,7 @@ Consider the following:
 - `Dockerfile` is used to build the Docker image.
 - `your_job.yml` specifies the K8s job configuration.
 
-When changing `your_job.yml`, only change the first set of requests and limits. You can replace `python test_script.py` with a different command you want to run. Otherwise, do not change the K8s job configuration. The dependencies in `pyproject.toml` and the `Dockerfile` may be updated as needed (see Step 4 [above](#getting-started) for more details).
+When changing `your_job.yml`, only change the job's name along with the first set of requests and limits. Do not change any other part of `your_job.yml`. You can change `run.sh` to modify the command you want to run inside the container. The dependencies in `pyproject.toml` and the `Dockerfile` may be updated as needed (see Step 4 [above](#getting-started) for more details).
 
 ### How can I get multi-GPU support?
 
