@@ -70,4 +70,3 @@ spec:
       restartPolicy: Never
   
   backoffLimit: 0 
-  
