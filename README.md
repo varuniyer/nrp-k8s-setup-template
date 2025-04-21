@@ -3,7 +3,7 @@
 
 ## Overview
 
-This repository is a template for running Python projects on [Nautilus](https://nrp.ai/documentation/) using Kubernetes. The following instructions assume you have installed [`kubectl`](https://kubernetes.io/docs/tasks/tools/) and saved the [NRP-provided K8s config](https://portal.nrp-nautilus.io/authConfig) to `~/.kube/config`. Most of the configuration is automated in `create_job.py`, which creates a job file and K8s secrets given user-specified arguments. This repository also provides a workflow for building and pushing Docker images to the NRP's GitLab container registry. For more details on how to use this template, see the [FAQ](#faq). 
+This repository is a template for running Python projects on [Nautilus](https://nrp.ai/documentation/) using Kubernetes. The following instructions assume you have installed [`kubectl`](https://kubernetes.io/docs/tasks/tools/) and saved the [NRP-provided K8s config](https://portal.nrp-nautilus.io/authConfig) to `~/.kube/config`. Most of the configuration is automated in `config_k8s.py`, which creates a job file and K8s secrets given user-specified arguments. This repository also provides a workflow for building and pushing Docker images to the NRP's GitLab container registry. For more details on how to use this template, see the [FAQ](#faq). 
 
 
 ## Getting started
@@ -12,7 +12,7 @@ First, (privately) fork this repo. Then follow these steps:
 
 1. Create a [Personal Access Token](https://docs.gitlab.com/user/profile/personal_access_tokens/) with the `read_repository` scope.
 2. Create a [deploy token](https://docs.gitlab.com/user/project/deploy_tokens/) with the `read_registry` scope.
-3. Run `python create_job.py --netid NetID --username GitLabUsername --repo RepoName --branch BranchName --output your_job.yml --pat GitLabPAT --dt-username DeployTokenUsername --dt-password DeployTokenPassword`
+3. Run `python config_k8s.py --netid NetID --username GitLabUsername --repo RepoName --branch BranchName --output your_job.yml --pat GitLabPAT --dt-username DeployTokenUsername --dt-password DeployTokenPassword`
     - `NetID` is your NetID
     - `GitLabUsername` is your gitlab username
     - `RepoName` is the name of your fork
