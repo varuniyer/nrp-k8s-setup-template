@@ -35,12 +35,16 @@ def main():
     args = parser.parse_args()
 
     # Define values to fill in the template file
+    repo_lower = args.repo.lower()
     template_vars = {
         "netid": args.netid,
         "username": args.username,
         "repo": args.repo,
-        "repo_lower": (repo_lower := args.repo.lower()),
+        "repo_lower": repo_lower,
         "branch": args.branch,
+        "gitlab_secret": f"{args.netid}-gitlab",
+        "registry_secret": f"{args.netid}-{repo_lower}-regcred",
+        "docker_image": f"gitlab-registry.nrp-nautilus.io/{args.username}/{repo_lower}",
     }
 
     # Read template file, fill in values, and write to output file
@@ -57,7 +61,7 @@ def main():
             "create",
             "secret",
             "generic",
-            f"{args.netid}-gitlab",
+            template_vars["gitlab_secret"],
             "--from-literal=user=" + args.username,
             "--from-literal=password=" + args.pat,
         ]
@@ -73,11 +77,8 @@ def main():
             "create",
             "secret",
             "docker-registry",
-            f"{args.netid}-{repo_lower}-regcred",
-            "--docker-server=gitlab-registry.nrp-nautilus.io/"
-            + args.username
-            + "/"
-            + repo_lower,
+            template_vars["registry_secret"],
+            "--docker-server=" + template_vars["docker_image"],
             "--docker-username=" + args.dt_username,
             "--docker-password=" + args.dt_password,
         ]

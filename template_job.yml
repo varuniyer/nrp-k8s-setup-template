@@ -11,17 +11,17 @@ spec:
     spec:
       containers:
       - name: "{repo_lower}-runner"
-        image: gitlab-registry.nrp-nautilus.io/{username}/{repo_lower}:latest
+        image: "{docker_image}:latest"
         env:
         - name: GIT_USERNAME
           valueFrom:
             secretKeyRef:
-              name: "{netid}-gitlab"
+              name: "{gitlab_secret}"
               key: user
         - name: GIT_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: "{netid}-gitlab"
+              name: "{gitlab_secret}"
               key: password
         
         command: ["bash", "/home/user/work/{repo}/run.sh"]
@@ -65,7 +65,7 @@ spec:
         emptyDir: {{}}
 
       imagePullSecrets:
-      - name: "{netid}-{repo_lower}-regcred"
+      - name: "{registry_secret}"
 
       restartPolicy: Never
   
