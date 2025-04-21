@@ -1,10 +1,12 @@
 # K8s Setup Template
 
+## Overview
 
+This repository is a template for running Python projects on Nautilus using Kubernetes. The following instructions assume you have installed [`kubectl`](https://kubernetes.io/docs/tasks/tools/) and saved the [NRP-provided K8s config](https://portal.nrp-nautilus.io/authConfig) to `~/.kube/config`. Most of the work is done by `create_job.py`, which automatically creates a job file and K8s secrets based on user-specified arguments. Do not modify this file. This repository also provides a workflow for building and pushing Docker images to the NRP's GitLab container registry. For more details on how to use this template, see the [FAQ](#faq). 
 
 ## Getting started
 
-You can (privately) fork this repo to get started. Afterwards, follow these steps:
+First, (privately) fork this repo. Then follow these steps:
 
 1. Create a [Personal Access Token](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html) with the `read_repository` scope.
 2. Create a [deploy token](https://docs.gitlab.com/ce/user/project/deploy_tokens/) with the `read_registry` scope.
@@ -36,7 +38,7 @@ Consider the following:
 - `Dockerfile` is used to build the Docker image.
 - `your_job.yml` specifies the K8s job configuration.
 
-When changing `your_job.yml`, only change the first set of requests and limits. You can replace `python test_script.py` with a different command you want to run. Otherwise, do not change the K8s job configuration. The dependencies in `pyproject.toml` and the `Dockerfile` may be updated as needed (see Step 4 for additional details).
+When changing `your_job.yml`, only change the first set of requests and limits. You can replace `python test_script.py` with a different command you want to run. Otherwise, do not change the K8s job configuration. The dependencies in `pyproject.toml` and the `Dockerfile` may be updated as needed (see Step 4 [above](#getting-started) for more details).
 
 ### How can I get multi-GPU support?
 
