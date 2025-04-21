@@ -10,7 +10,7 @@ spec:
   template:
     spec:
       containers:
-      - name: template-runner
+      - name: "{repo_lower}-runner"
         image: gitlab-registry.nrp-nautilus.io/{username}/{repo_lower}:latest
         env:
         - name: GIT_USERNAME
