@@ -1,4 +1,4 @@
-"""Fills in template_job.yml with user-specified values"""
+"""Fills in job_template.yml with user-specified values"""
 
 import argparse
 from pathlib import Path
@@ -8,7 +8,7 @@ from subprocess import run
 def main():
     # Set up command line argument parser
     parser = argparse.ArgumentParser(
-        description="Fills in template_job.yml with user-specified values"
+        description="Fills in job_template.yml with user-specified values"
     )
 
     # Required arguments
@@ -48,7 +48,7 @@ def main():
     }
 
     # Read template file, fill in values, and write to output file
-    job_content = Path("template_job.yml").read_text().format(**template_vars)
+    job_content = Path("job_template.yml").read_text().format(**template_vars)
     Path(args.output).write_text(job_content)
 
     print(f"\nSuccessfully created {args.output}")
