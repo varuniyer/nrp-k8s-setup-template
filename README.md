@@ -2,14 +2,14 @@
 
 ## Overview
 
-This repository is a template for running Python projects on Nautilus using Kubernetes. The following instructions assume you have installed [`kubectl`](https://kubernetes.io/docs/tasks/tools/) and saved the [NRP-provided K8s config](https://portal.nrp-nautilus.io/authConfig) to `~/.kube/config`. Most of the work is done by `create_job.py`, which automatically creates a job file and K8s secrets based on user-specified arguments. Do not modify this file. This repository also provides a workflow for building and pushing Docker images to the NRP's GitLab container registry. For more details on how to use this template, see the [FAQ](#faq). 
+This repository is a template for running Python projects on Nautilus using Kubernetes. The following instructions assume you have installed [`kubectl`](https://kubernetes.io/docs/tasks/tools/) and saved the [NRP-provided K8s config](https://portal.nrp-nautilus.io/authConfig) to `~/.kube/config`. Most of the configuration is automated in `create_job.py`, which creates a job file and K8s secrets based on user-specified arguments. Do not modify this file. This repository also provides a workflow for building and pushing Docker images to the NRP's GitLab container registry. For more details on how to use this template, see the [FAQ](#faq). 
 
 ## Getting started
 
 First, (privately) fork this repo. Then follow these steps:
 
-1. Create a [Personal Access Token](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html) with the `read_repository` scope.
-2. Create a [deploy token](https://docs.gitlab.com/ce/user/project/deploy_tokens/) with the `read_registry` scope.
+1. Create a [Personal Access Token](https://docs.gitlab.com/user/profile/personal_access_tokens/) with the `read_repository` scope.
+2. Create a [deploy token](https://docs.gitlab.com/user/project/deploy_tokens/) with the `read_registry` scope.
 3. Run `python create_job.py --netid NetID --username GitLabUsername --repo RepoName --branch BranchName --output your_job.yml --pat GitLabPAT --dt-username DeployTokenUsername --dt-password DeployTokenPassword`
     - `NetID` is your NetID
     - `GitLabUsername` is your gitlab username
@@ -33,16 +33,18 @@ First, (privately) fork this repo. Then follow these steps:
 ### Which files should I be changing for my own project?
 
 Consider the following:
-- `test_script.py` is run when the job is executed.
+- `run.sh` is the script that runs `test_script.py` when the job is executed.
 - `pyproject.toml` contains Python dependencies.
 - `Dockerfile` is used to build the Docker image.
 - `your_job.yml` specifies the K8s job configuration.
 
-When changing `your_job.yml`, only change the job's name along with the first set of requests and limits. Do not change any other part of `your_job.yml`. You can change `run.sh` to modify the command you want to run inside the container. The dependencies in `pyproject.toml` and the `Dockerfile` may be updated as needed (see Step 4 [above](#getting-started) for more details).
+You should only change the job's name (Line 7) and the main container's requests/limits (Lines 33-42) in `your_job.yml`. Do not change any other part of `your_job.yml`. Adjust the command in `run.sh` as needed. The dependencies in `pyproject.toml` and the `Dockerfile` may be updated as needed (see Step 4 [above](#getting-started) for more details).
 
-### How can I get multi-GPU support?
 
-Install `libnccl2` in the [`Dockerfile`](https://gitlab.nrp-nautilus.io/varuniyer/k8s-setup-template/-/blob/main/Dockerfile?ref_type=heads#L8) (next to `git`).
+### Why is my CI/CD pipeline timing out?
+
+First, try minimizing the number of dependencies installed in `pyproject.toml` and the `Dockerfile`. Otherwise, you may increase the timeout in [`.gitlab-ci.yml`](https://gitlab.nrp-nautilus.io/varuniyer/k8s-setup-template/-/blob/main/.gitlab-ci.yml?ref_type=heads#L7).
+
 
 ### Why not include configuration for a PVC (to access [CephFS](https://nrp.ai/documentation/userdocs/storage/ceph/)) or `rclone` (to access [Ceph S3](https://nrp.ai/documentation/userdocs/storage/ceph-s3/))?
 
@@ -50,4 +52,4 @@ Unfortunately, storage offered by the NRP has several usage restrictions. Notabl
 
 ### Will I need to wait for the GitLab CI/CD job to finish after each pushed commit for my next K8s job to access new code?
 
-No, your K8s job automatically fetches the most recent code from your fork's `BranchName` branch. You only need to wait for the CI/CD pipeline to complete if you've modified either `pyproject.toml` or the `Dockerfile`, since these changes require rebuilding the container image.
+No, your K8s job automatically clones your fork's `BranchName` branch when the job is created. You only need to wait for the CI/CD pipeline to complete if you've modified either `pyproject.toml` or the `Dockerfile`, since these changes require rebuilding the container image.

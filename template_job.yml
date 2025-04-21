@@ -24,7 +24,7 @@ spec:
               name: "{netid}-gitlab"
               key: password
         
-        command: ["sh", "/home/user/work/{repo}/run.sh"]
+        command: ["bash", "/home/user/work/{repo}/run.sh"]
         workingDir: "/home/user/work/{repo}"
         volumeMounts:
           - name: git-repo
