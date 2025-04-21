@@ -3,7 +3,7 @@
 
 ## Overview
 
-This repository is a template for running Python projects on Nautilus using Kubernetes. The following instructions assume you have installed [`kubectl`](https://kubernetes.io/docs/tasks/tools/) and saved the [NRP-provided K8s config](https://portal.nrp-nautilus.io/authConfig) to `~/.kube/config`. Most of the configuration is automated in `create_job.py`, which creates a job file and K8s secrets based on user-specified arguments. This repository also provides a workflow for building and pushing Docker images to the NRP's GitLab container registry. For more details on how to use this template, see the [FAQ](#faq). 
+This repository is a template for running Python projects on Nautilus using Kubernetes. The following instructions assume you have installed [`kubectl`](https://kubernetes.io/docs/tasks/tools/) and saved the [NRP-provided K8s config](https://portal.nrp-nautilus.io/authConfig) to `~/.kube/config`. Most of the configuration is automated in `create_job.py`, which creates a job file and K8s secrets given user-specified arguments. This repository also provides a workflow for building and pushing Docker images to the NRP's GitLab container registry. For more details on how to use this template, see the [FAQ](#faq). 
 
 
 ## Getting started
@@ -25,7 +25,7 @@ First, (privately) fork this repo. Then follow these steps:
     - Do not pass in `--dt-username` or `--dt-password` if you already created the secret `NetID-RepoName-regcred`
 
 4. Install and use [`uv`](https://docs.astral.sh/uv/getting-started/installation/) for local development. Run `uv sync`. Initially, this will create a virtualenv in `.venv` containing all project dependencies.
-    - You may update Python dependencies in `pyproject.toml` and run `uv sync` again to update the virtualenv. After updating dependencies, commit and push your changes to `BranchName` to build your first image. You can track the build's progress on GitLab in the sidebar "Build" &rarr; "Jobs". Step 7 will only work after the first image has been built.
+    - You may update Python dependencies in `pyproject.toml` and run `uv sync` again to update the virtualenv. After updating dependencies, commit and push your changes to `BranchName` to build your first image. You can track the build's progress on GitLab in the sidebar "Build" &rarr; "Jobs". Step 7 will only work after the image has been built.
 5. Adjust `run.sh` and `test_script.py` to suit your needs. Modify `your_job.yml` to pass in arguments as needed.
 6. Once your changes are complete, push them to `BranchName`.
 7. Finally, run the job with the following command: `kubectl create -f your_job.yml`
