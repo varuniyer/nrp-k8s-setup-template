@@ -1,8 +1,10 @@
 # K8s Setup Template
 
+
 ## Overview
 
-This repository is a template for running Python projects on Nautilus using Kubernetes. The following instructions assume you have installed [`kubectl`](https://kubernetes.io/docs/tasks/tools/) and saved the [NRP-provided K8s config](https://portal.nrp-nautilus.io/authConfig) to `~/.kube/config`. Most of the configuration is automated in `create_job.py`, which creates a job file and K8s secrets based on user-specified arguments. Do not modify this file. This repository also provides a workflow for building and pushing Docker images to the NRP's GitLab container registry. For more details on how to use this template, see the [FAQ](#faq). 
+This repository is a template for running Python projects on Nautilus using Kubernetes. The following instructions assume you have installed [`kubectl`](https://kubernetes.io/docs/tasks/tools/) and saved the [NRP-provided K8s config](https://portal.nrp-nautilus.io/authConfig) to `~/.kube/config`. Most of the configuration is automated in `create_job.py`, which creates a job file and K8s secrets based on user-specified arguments. This repository also provides a workflow for building and pushing Docker images to the NRP's GitLab container registry. For more details on how to use this template, see the [FAQ](#faq). 
+
 
 ## Getting started
 
@@ -23,12 +25,14 @@ First, (privately) fork this repo. Then follow these steps:
     - Do not pass in `--dt-username` or `--dt-password` if you already created the secret `NetID-RepoName-regcred`
 
 4. Install and use [`uv`](https://docs.astral.sh/uv/getting-started/installation/) for local development. Run `uv sync`. Initially, this will create a virtualenv in `.venv` containing all project dependencies.
-    - You may update Python dependencies in `pyproject.toml` and run `uv sync` again to update the virtualenv. After updating dependencies, commit and push your changes to build a new image. You can track the new build\'s progress on GitLab in the sidebar \"Build\" -> \"Jobs\".
+    - You may update Python dependencies in `pyproject.toml` and run `uv sync` again to update the virtualenv. After updating dependencies, commit and push your changes to `BranchName` to build your first image. You can track the build's progress on GitLab in the sidebar "Build" &rarr; "Jobs". Step 7 will only work after the first image has been built.
 5. Adjust `run.sh` and `test_script.py` to suit your needs. Modify `your_job.yml` to pass in arguments as needed.
 6. Once your changes are complete, push them to `BranchName`.
 7. Finally, run the job with the following command: `kubectl create -f your_job.yml`
 
+
 ## FAQ
+
 
 ### Which files should I be changing for my own project?
 
@@ -49,6 +53,7 @@ First, try minimizing the number of dependencies installed in `pyproject.toml` a
 ### Why not include configuration for a PVC (to access [CephFS](https://nrp.ai/documentation/userdocs/storage/ceph/)) or `rclone` (to access [Ceph S3](https://nrp.ai/documentation/userdocs/storage/ceph-s3/))?
 
 Unfortunately, storage offered by the NRP has several usage restrictions. Notably, even accidentally storing python dependencies in Ceph may result in a temporary ban from accessing Nautilus resources. Moreover, HuggingFace can be used to efficiently store both [datasets](https://huggingface.co/docs/datasets/en/create_dataset) and [model checkpoints](https://huggingface.co/docs/huggingface_hub/en/guides/upload). Performance can be logged using [wandb](https://docs.wandb.ai/) or [Comet](https://www.comet.com/docs/). Given the presence of these alternatives (which are not subject to the same usage restrictions), this template does not support NRP-provided storage.
+
 
 ### Will I need to wait for the GitLab CI/CD job to finish after each pushed commit for my next K8s job to access new code?
 

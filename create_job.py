@@ -15,9 +15,7 @@ def main():
     parser.add_argument(
         "--branch", default="main", help="Name of the branch to create the job on"
     )
-    parser.add_argument(
-        "--output", required=True, help="Output file name (default: job.yml)"
-    )
+    parser.add_argument("--output", required=True, help="Output file name")
     parser.add_argument("--pat", default="", help="Your GitLab Personal Access Token")
     parser.add_argument(
         "--dt-username",

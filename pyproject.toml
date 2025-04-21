@@ -9,12 +9,12 @@ dependencies = [
 ]
 
 [tool.ruff]
-exclude = ["bart_score.py", "__pycache__", ".venv"]
+exclude = ["unchecked_code.py", "__pycache__", ".venv"]
 target-version = "py310"
 
 [tool.pyright]
 exclude = ["__pycache__", ".venv"]
-ignore = ["bart_score.py"]
+ignore = ["unchecked_code.py"]
 reportMissingTypeStubs = "none"
 reportUnknownMemberType = "none"
 typeCheckingMode = "strict"

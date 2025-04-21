@@ -16,4 +16,4 @@ WORKDIR /home/user/work
 ENV PATH=/home/user/work/.venv/bin:$PATH
 COPY pyproject.toml .
 RUN uv sync -n && \
-    rm pyproject.toml 
+    rm pyproject.toml
