@@ -3,7 +3,7 @@
 
 ## Overview
 
-This repository is a template for running Python projects on Nautilus using Kubernetes. The following instructions assume you have installed [`kubectl`](https://kubernetes.io/docs/tasks/tools/) and saved the [NRP-provided K8s config](https://portal.nrp-nautilus.io/authConfig) to `~/.kube/config`. Most of the configuration is automated in `create_job.py`, which creates a job file and K8s secrets given user-specified arguments. This repository also provides a workflow for building and pushing Docker images to the NRP's GitLab container registry. For more details on how to use this template, see the [FAQ](#faq). 
+This repository is a template for running Python projects on [Nautilus](https://nrp.ai/documentation/) using Kubernetes. The following instructions assume you have installed [`kubectl`](https://kubernetes.io/docs/tasks/tools/) and saved the [NRP-provided K8s config](https://portal.nrp-nautilus.io/authConfig) to `~/.kube/config`. Most of the configuration is automated in `create_job.py`, which creates a job file and K8s secrets given user-specified arguments. This repository also provides a workflow for building and pushing Docker images to the NRP's GitLab container registry. For more details on how to use this template, see the [FAQ](#faq). 
 
 
 ## Getting started
