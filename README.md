@@ -42,7 +42,7 @@ Consider the following:
 - `Dockerfile` is used to build the Docker image.
 - `your_job.yml` specifies the K8s job configuration.
 
-You should only change the job's name (Line 7) and the main container's requests/limits (Lines 33-42) in `your_job.yml`. Do not change any other part of `your_job.yml`. Adjust the command in `run.sh` as needed. The dependencies in `pyproject.toml` and the `Dockerfile` may be updated as needed (see Step 4 [above](#getting-started) for more details).
+You should only change the job's name (Line 7) and the main container's requests/limits (Lines 21-30) in `your_job.yml`. Do not change any other part of `your_job.yml`. Adjust the command in `run.sh` as needed. The dependencies in `pyproject.toml` and the `Dockerfile` may be updated as needed (see Step 4 [above](#getting-started) for more details).
 
 
 ### Why is my CI/CD pipeline timing out?

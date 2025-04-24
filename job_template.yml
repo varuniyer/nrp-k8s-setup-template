@@ -12,18 +12,6 @@ spec:
       containers:
       - name: "{repo_lower}-runner"
         image: "{docker_image}:latest"
-        env:
-        - name: GIT_USERNAME
-          valueFrom:
-            secretKeyRef:
-              name: "{gitlab_secret}"
-              key: user
-        - name: GIT_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: "{gitlab_secret}"
-              key: password
-        
         command: ["bash", "run.sh"]
         workingDir: "/home/user/work/{repo}"
         volumeMounts:
@@ -43,12 +31,23 @@ spec:
       initContainers:
       - name: init-clone-repo
         image: alpine/git
+        env:
+        - name: GIT_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: "{gitlab_secret}"
+              key: user
+        - name: GIT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: "{gitlab_secret}"
+              key: password
         args:
           - clone
           - -b
           - {branch}
           - --single-branch
-          - https://$(GIT_USERNAME):$(GIT_PASSWORD)@gitlab.nrp-nautilus.io/{username}/{repo}
+          - https://$(GIT_USERNAME):$(GIT_PASSWORD)@gitlab.nrp-nautilus.io/{username}/{repo}.git
           - /opt/{repo}
         resources:
           limits:
