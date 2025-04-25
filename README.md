@@ -12,22 +12,18 @@ First, (privately) fork this repo. Then follow these steps:
 
 1. Create a [Personal Access Token](https://docs.gitlab.com/user/profile/personal_access_tokens/) with the `read_repository` scope.
 2. Create a [deploy token](https://docs.gitlab.com/user/project/deploy_tokens/) with the `read_registry` scope.
-3. Run `python config_k8s.py --netid NetID --username GitLabUsername --repo RepoName --branch BranchName --output your_job.yml --pat GitLabPAT --dt-username DeployTokenUsername --dt-password DeployTokenPassword`
+3. Run `python config_k8s.py --netid NetID --output your_job.yml --pat GitLabPAT --dt-username DeployTokenUsername --dt-password DeployTokenPassword`
     - `NetID` is your NetID
-    - `GitLabUsername` is your gitlab username
-    - `RepoName` is the name of your fork
-    - `BranchName` is the name of the branch containing the code to run
     - `your_job.yml` is the path where the job file will be created
     - `GitLabPAT` is the Personal Access Token you created in step 1
     - `DeployTokenUsername` is the username of the deploy token you created in step 2
     - `DeployTokenPassword` is the password of the deploy token you created in step 2
-    - Do not pass in `--pat` if you already created the secret `NetID-gitlab`
-    - Do not pass in `--dt-username` or `--dt-password` if you already created the secret `NetID-RepoName-regcred`
+    - `--pat`, `--dt-username`, and `--dt-password` are optional if you already created the secrets `NetID-gitlab` and `NetID-RepoName-regcred`
 
 4. Install and use [`uv`](https://docs.astral.sh/uv/getting-started/installation/) for local development. Run `uv sync`. Initially, this will create a virtualenv in `.venv` containing all project dependencies.
-    - You may update Python dependencies in `pyproject.toml` and run `uv sync` again to update the virtualenv. After updating dependencies, commit and push your changes to `BranchName` to build your first image. You can track the build's progress on GitLab in the sidebar "Build" &rarr; "Jobs". Step 7 will only work after the image has been built.
+    - You may update Python dependencies in `pyproject.toml` and run `uv sync` again to update the virtualenv. After updating dependencies, commit and push your changes to the current branch of your fork to build your first image. You can track the build's progress on GitLab in the sidebar "Build" &rarr; "Jobs". Step 7 will only work after the image has been built.
 5. Adjust `run.sh` and `test_script.py` to suit your needs. Modify `your_job.yml` to pass in arguments as needed.
-6. Once your changes are complete, push them to `BranchName`.
+6. Once your changes are complete, push them to the current branch of your fork.
 7. Finally, run the job with the following command: `kubectl create -f your_job.yml`
 
 
@@ -57,4 +53,4 @@ Unfortunately, storage offered by the NRP has several usage restrictions. Notabl
 
 ### Will I need to wait for the GitLab CI/CD job to finish after each pushed commit for my next K8s job to access new code?
 
-No, your K8s job automatically clones your fork's `BranchName` branch when the job is created. You only need to wait for the CI/CD pipeline to complete if you've modified either `pyproject.toml` or the `Dockerfile`, since these changes require rebuilding the container image.
+No, your K8s job automatically clones your current branch when the job is created. You only need to wait for the CI/CD pipeline to complete if you've modified either `pyproject.toml` or the `Dockerfile`, since these changes require rebuilding the container image.
