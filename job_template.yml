@@ -12,8 +12,6 @@ spec:
       containers:
       - name: "{repo_lower}-runner"
         image: "{registry_server}/{username}/{repo_lower}:latest"
-        command: ["bash", "-i", "run.sh"]
-        workingDir: "/home/user/work/{repo}"
         volumeMounts:
           - name: git-repo
             mountPath: /home/user/work/{repo}

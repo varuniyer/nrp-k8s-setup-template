@@ -22,7 +22,7 @@ First, (privately) fork this repo. Then follow these steps:
 
 4. Install and use [`uv`](https://docs.astral.sh/uv/getting-started/installation/) for local development. Run `uv sync`. Initially, this will create a virtualenv in `.venv` containing all project dependencies.
     - You may update Python dependencies in `pyproject.toml` and run `uv sync` again to update the virtualenv. After updating dependencies, commit and push your changes to the current branch of your fork to build your first image. You can track the build's progress on GitLab in the sidebar "Build" &rarr; "Jobs". Step 7 will only work after the image has been built.
-5. Adjust `run.sh` and `test_script.py` to suit your needs. Modify `your_job.yml` to pass in arguments as needed.
+5. Adjust `run.sh` and `test_script.py` to suit your needs. Modify `your_job.yml` to pass in arguments as needed (by creating an `env` section under line 14).
 6. Once your changes are complete, push them to the current branch of your fork.
 7. Finally, run the job with the following command: `kubectl create -f your_job.yml`
 
@@ -33,15 +33,15 @@ First, (privately) fork this repo. Then follow these steps:
 ### Which files should I be changing for my own project?
 
 Consider the following:
-- `run.sh` is the script that runs `test_script.py` when the job is executed.
+- `run.sh` is the script that runs when the container starts (executes your Python scripts).
 - `pyproject.toml` contains Python dependencies.
 - `Dockerfile` is used to build the Docker image.
 - `your_job.yml` specifies the K8s job configuration.
 
-You should only change the job's name (Line 7) and the main container's requests/limits (Lines 21-30) in `your_job.yml`. Do not change any other part of `your_job.yml`. Adjust the command in `run.sh` as needed. The dependencies in `pyproject.toml` and the `Dockerfile` may be updated as needed (see Step 4 [above](#getting-started) for more details).
+In `your_job.yml`, modify only the job name (Line 7) and the main container's resource requests/limits (Lines 19-28). You may add environment variables, but avoid changing other sections.
 
 
-### Why is my CI/CD pipeline timing out?
+### How can I prevent my CI/CD pipeline from timing out?
 
 First, try minimizing the number of dependencies installed in `pyproject.toml` and the `Dockerfile`. Otherwise, you may increase the timeout in [`.gitlab-ci.yml`](https://gitlab.nrp-nautilus.io/varuniyer/k8s-setup-template/-/blob/main/.gitlab-ci.yml?ref_type=heads#L7).
 
@@ -53,4 +53,9 @@ Unfortunately, storage offered by the NRP has several usage restrictions. Notabl
 
 ### Will I need to wait for the GitLab CI/CD job to finish after each pushed commit for my next K8s job to access new code?
 
-No, your K8s job automatically clones your current branch when the job is created. You only need to wait for the CI/CD pipeline to complete if you've modified either `pyproject.toml` or the `Dockerfile`, since these changes require rebuilding the container image.
+No, your K8s job automatically clones your current branch when the job is created. You only need to wait for the CI/CD pipeline to complete if you've modified `pyproject.toml`, the `Dockerfile`, or `.gitlab-ci.yml`, since these changes require rebuilding the container image. You should avoid modifying `entrypoint.sh`, but if you must, you will need to wait for the CI/CD pipeline to complete for your changes to take effect.
+
+
+### How can I install additional CUDA binaries/libraries?
+
+First, in the `Dockerfile`, change `base` to either `runtime` (for more CUDA libraries) or `devel` (for all CUDA development tools including `nvcc`). A multi-stage build may be used to select which CUDA binaries and libraries to copy into the final image. The minimal image size willexpedite pushing your image to the container registry and starting your K8s job.
