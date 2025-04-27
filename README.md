@@ -20,17 +20,17 @@ This repository is a template for running Python projects on GPU nodes in [NRP N
 
 In your terminal, clone your fork of this repository and `cd` into its directory. Next, follow these steps:
 
-1. Create a K8s job file named `your_job.yml` with the following command:
+1. Generate a K8s job file named `your_job.yml` with the following command:
     ```
     python config_k8s.py --netid NetID --output your_job.yml --pat GitLabPAT --dt-username DeployTokenUsername --dt-password DeployTokenPassword
     ```
     - `--pat`, `--dt-username`, and `--dt-password` can be omitted if you already created the secrets `NetID-gitlab` and `NetID-RepoName-regcred`
 
 2. Create a virtualenv for your project:
-    - Modify `pyproject.toml` to add your project's dependencies
+    - Update `pyproject.toml` to include your project's dependencies
     - Run `uv sync` to install them in a new virtualenv
     - Commit and push your changes
-    - This will automatically trigger a CI/CD pipeline on GitLab to build your image and push it to the NRP's container registry
+    - This will automatically start a CI/CD pipeline on GitLab to build your image and push it to the NRP's container registry
     - Navigate to "Build" &rarr; "Jobs" in the sidebar of GitLab's web UI to monitor the build job's progress
 
 3. Add your project's run commands to `run.sh` and add your code to the repo.
@@ -43,7 +43,7 @@ In your terminal, clone your fork of this repository and `cd` into its directory
 
 5. Once your changes are complete, push them to the current branch of your fork.
 
-6. Once the CI/CD pipeline completes, run the job with the following command:
+6. Once the CI/CD pipeline completes, run your job with the following command:
     ```
     kubectl create -f your_job.yml
     ```
@@ -57,7 +57,7 @@ In your terminal, clone your fork of this repository and `cd` into its directory
 
 Modify the following files along with your Python code:
 
-- `run.sh` executes your code when the container starts
+- `run.sh` runs your code when the container starts
 - `pyproject.toml` contains Python dependencies
 - `Dockerfile` is used to build the Docker image
 - `your_job.yml` specifies the K8s job configuration
@@ -67,12 +67,12 @@ Avoid changing `entrypoint.sh` as this requires rebuilding the image for changes
 
 ### How can I prevent my CI/CD pipeline from timing out?
 
-Remove unnecessary dependencies from both `pyproject.toml` and the `Dockerfile`. If this is not enough, you may increase the timeout in [`.gitlab-ci.yml`](https://gitlab.nrp-nautilus.io/varuniyer/k8s-setup-template/-/blob/main/.gitlab-ci.yml?ref_type=heads#L7).
+Remove unnecessary dependencies from both `pyproject.toml` and the `Dockerfile`. If this is not enough, you may extend the timeout in [`.gitlab-ci.yml`](https://gitlab.nrp-nautilus.io/varuniyer/k8s-setup-template/-/blob/main/.gitlab-ci.yml?ref_type=heads#L7).
 
 
 ### Why not include configuration for a [PVC](https://nrp.ai/documentation/userdocs/tutorial/storage/#learning-objectives) (to access [CephFS](https://nrp.ai/documentation/userdocs/storage/ceph/)) or [`rclone`](https://rclone.org/) (to access [Ceph S3](https://nrp.ai/documentation/userdocs/storage/ceph-s3/))?
 
-NRP-provided storage has usage restrictions. Notably, even accidentally storing python dependencies in Ceph may result in a temporary ban from accessing Nautilus resources. Instead, use the following:
+NRP-provided storage has usage restrictions. Notably, even accidentally storing python dependencies in Ceph may result in a temporary ban from accessing Nautilus resources. Instead, use:
 
 - [Hugging Face Hub](https://huggingface.co/docs/hub/en/index) to efficiently store both [datasets](https://huggingface.co/docs/datasets/en/upload_dataset) and [model checkpoints](https://huggingface.co/docs/transformers/main/en/model_sharing)
 - [wandb](https://docs.wandb.ai/) or [Comet](https://www.comet.com/docs/) to log experiment results
