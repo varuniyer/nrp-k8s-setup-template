@@ -26,7 +26,6 @@ In your terminal, clone your fork of this repository and `cd` into its directory
     - `DeployTokenUsername` is your deploy token's username
     - `DeployTokenPassword` is your deploy token's password
     - `--pat`, `--dt-username`, and `--dt-password` are optional if you already created the secrets `NetID-gitlab` and `NetID-RepoName-regcred`
-    - Adjust the branch name in `your_job.yml` as needed.
 
 2. Run `uv sync`. This will create a virtualenv in `.venv` containing all Python dependencies.
     - You may update Python dependencies in `pyproject.toml` and run `uv sync` again to update the virtualenv.
@@ -37,9 +36,10 @@ In your terminal, clone your fork of this repository and `cd` into its directory
 3. Adjust `run.sh` and `test_script.py` to suit your needs.
 
 4. Modify `your_job.yml` as needed:
-    - The job name (Line 7)
-    - Environment variables inside your container's `env` section (Line 16)
-    - Your container's resource requests/limits (Lines 24-34)
+    - The job name (line 7)
+    - Environment variables inside your container's `env` section (line 16)
+    - Your container's resource requests/limits (lines 24-34)
+    - The branch name (line 48)
 
 5. Once your changes are complete, push them to the current branch of your fork.
 
