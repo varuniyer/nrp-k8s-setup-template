@@ -19,7 +19,7 @@ spec:
 
         volumeMounts:
           - name: git-repo
-            mountPath: /home/user/work/{repo}
+            mountPath: "/home/user/work/{repo}"
 
         resources:
           limits:
@@ -45,10 +45,10 @@ spec:
         args:
           - clone
           - -b
-          - {branch}
+          - "{branch}"
           - --single-branch
           - https://{username}:$(GITLAB_PAT)@gitlab.nrp-nautilus.io/{username}/{repo}.git
-          - /opt/{repo}
+          - "/opt/{repo}"
         resources:
           limits:
             memory: 100Mi
@@ -60,7 +60,7 @@ spec:
             ephemeral-storage: 100Mi
         volumeMounts:
           - name: git-repo
-            mountPath: /opt/{repo}
+            mountPath: "/opt/{repo}"
       volumes:
       - name: git-repo
         emptyDir: {{}}
