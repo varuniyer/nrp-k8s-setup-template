@@ -12,9 +12,15 @@ spec:
       containers:
       - name: "{repo_lower}-runner"
         image: "{registry_server}/{username}/{repo_lower}:latest"
+
+        env:
+        - name: "MY_ENV_VAR"
+          value: "my_value"
+
         volumeMounts:
           - name: git-repo
             mountPath: /home/user/work/{repo}
+
         resources:
           limits:
             nvidia.com/gpu: "1"
@@ -26,6 +32,7 @@ spec:
             memory: 2Gi
             cpu: "1"
             ephemeral-storage: 4Gi
+            
       initContainers:
       - name: init-clone-repo
         image: alpine/git

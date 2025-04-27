@@ -1,44 +1,68 @@
-# K8s Setup Template
+# K8s (Kubernetes) Setup Template
 
 
 ## Overview
 
-This repository is a template for running Python projects on [Nautilus](https://nrp.ai/documentation/) using Kubernetes. The following instructions assume you have installed [`kubectl`](https://kubernetes.io/docs/tasks/tools/) and saved the [NRP-provided K8s config](https://portal.nrp-nautilus.io/authConfig) to `~/.kube/config`. Most of the configuration is automated in `config_k8s.py`, which creates a job file and K8s secrets given user-specified arguments. This repository also provides a workflow for building and pushing Docker images to the NRP's GitLab container registry. For more details on how to use this template, see the [FAQ](#faq). 
+This repository is a template for running Python projects on GPU nodes in [NRP Nautilus](https://nrp.ai/documentation/). Most of the configuration is automated in `config_k8s.py`, which creates a job file and K8s secrets given user-specified arguments. This repository also provides a workflow for building and pushing Docker images to the NRP's GitLab container registry.
+
+
+## Prerequisites
+
+- Install [`kubectl`](https://kubernetes.io/docs/tasks/tools/), [`git`](https://git-scm.com/downloads), and [`uv`](https://docs.astral.sh/uv/getting-started/installation/)
+- Save the [NRP-provided K8s config](https://portal.nrp-nautilus.io/authConfig) to `~/.kube/config`
+- Create a [Personal Access Token](https://docs.gitlab.com/user/profile/personal_access_tokens/) with the `read_repository` scope.
+- Create a [deploy token](https://docs.gitlab.com/user/project/deploy_tokens/) with the `read_registry` scope.
+- Fork this repository either privately or publicly.
 
 
 ## Getting started
 
-First, (privately) fork this repo. Then follow these steps:
+In your terminal, clone your fork of this repository and `cd` into its directory. Next, follow these steps:
 
-1. Create a [Personal Access Token](https://docs.gitlab.com/user/profile/personal_access_tokens/) with the `read_repository` scope.
-2. Create a [deploy token](https://docs.gitlab.com/user/project/deploy_tokens/) with the `read_registry` scope.
-3. Run `python config_k8s.py --netid NetID --output your_job.yml --pat GitLabPAT --dt-username DeployTokenUsername --dt-password DeployTokenPassword`
+1. Run `python config_k8s.py --netid NetID --output your_job.yml --pat GitLabPAT --dt-username DeployTokenUsername --dt-password DeployTokenPassword`
     - `NetID` is your NetID
     - `your_job.yml` is the path where the job file will be created
-    - `GitLabPAT` is the Personal Access Token you created in step 1
-    - `DeployTokenUsername` is the username of the deploy token you created in step 2
-    - `DeployTokenPassword` is the password of the deploy token you created in step 2
+    - `GitLabPAT` is your Personal Access Token
+    - `DeployTokenUsername` is your deploy token's username
+    - `DeployTokenPassword` is your deploy token's password
     - `--pat`, `--dt-username`, and `--dt-password` are optional if you already created the secrets `NetID-gitlab` and `NetID-RepoName-regcred`
+    - Adjust the branch name in `your_job.yml` as needed.
 
-4. Install and use [`uv`](https://docs.astral.sh/uv/getting-started/installation/) for local development. Run `uv sync`. Initially, this will create a virtualenv in `.venv` containing all project dependencies.
-    - You may update Python dependencies in `pyproject.toml` and run `uv sync` again to update the virtualenv. After updating dependencies, commit and push your changes to the current branch of your fork to build your first image. You can track the build's progress on GitLab in the sidebar "Build" &rarr; "Jobs". Step 7 will only work after the image has been built.
-5. Adjust `run.sh` and `test_script.py` to suit your needs. Modify `your_job.yml` to pass in arguments as needed (by creating an `env` section under line 14).
-6. Once your changes are complete, push them to the current branch of your fork.
-7. Finally, run the job with the following command: `kubectl create -f your_job.yml`
+2. Run `uv sync`. This will create a virtualenv in `.venv` containing all Python dependencies.
+    - You may update Python dependencies in `pyproject.toml` and run `uv sync` again to update the virtualenv.
+    - Commit and push your changes
+        - Push with changed dependencies to automatically trigger a CI/CD pipeline which builds your image and pushes it to the NRP's container registry.
+        - Track the build job's progress on GitLab in the sidebar "Build" &rarr; "Jobs".
+
+3. Adjust `run.sh` and `test_script.py` to suit your needs.
+
+4. Modify `your_job.yml` as needed:
+    - The job name (Line 7)
+    - Environment variables inside your container's `env` section (Line 16)
+    - Your container's resource requests/limits (Lines 24-34)
+
+5. Once your changes are complete, push them to the current branch of your fork.
+
+6. Once the CI/CD pipeline completes, run the job with the following command: `kubectl create -f your_job.yml`
+
+7. Run `kubectl get pods | grep <job-name>` to get the name of the pod associated with your job.
+
+8. Run `kubectl logs <pod-name>` to view the output of `run.sh`.
+
+9. Read the [FAQ](#faq) for more details regarding this template and the [NRP Nautilus documentation](https://nrp.ai/documentation/) for more information on how to use K8s on Nautilus.
 
 
 ## FAQ
 
-
 ### Which files should I be changing for my own project?
 
 Consider the following:
-- `run.sh` is the script that runs when the container starts (executes your Python scripts).
+- `run.sh` runs when the container starts (executing your code).
 - `pyproject.toml` contains Python dependencies.
 - `Dockerfile` is used to build the Docker image.
 - `your_job.yml` specifies the K8s job configuration.
 
-In `your_job.yml`, modify only the job name (Line 7) and the main container's resource requests/limits (Lines 19-28). You may add environment variables, but avoid changing other sections.
+You may modify these files as needed and add your own Python code. However, you should avoid changing `entrypoint.sh` (as this requires rebuilding the image for changes to take effect). Additional scripts may be run in `run.sh`.
 
 
 ### How can I prevent my CI/CD pipeline from timing out?
@@ -58,4 +82,4 @@ No, your K8s job automatically clones your current branch when the job is create
 
 ### How can I install additional CUDA binaries/libraries?
 
-First, in the `Dockerfile`, change `base` to either `runtime` (for more CUDA libraries) or `devel` (for all CUDA development tools including `nvcc`). A multi-stage build may be used to select which CUDA binaries and libraries to copy into the final image. The minimal image size willexpedite pushing your image to the container registry and starting your K8s job.
+First, in the `Dockerfile`, change `base` to either `runtime` (for more CUDA libraries) or `devel` (for all CUDA development tools including `nvcc`). A multi-stage build may be used to select which CUDA binaries and libraries to copy into the final image. The minimal image size will expedite pushing your image to the container registry and starting your K8s job.
