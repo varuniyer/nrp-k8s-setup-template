@@ -55,12 +55,14 @@ In your terminal, clone your fork of this repository and `cd` into its directory
 
 ### Which files should I modify for my own project?
 
+Modify the following files along with your Python code:
+
 - `run.sh` executes your code when the container starts
 - `pyproject.toml` contains Python dependencies
 - `Dockerfile` is used to build the Docker image
 - `your_job.yml` specifies the K8s job configuration
 
-You may modify these files as needed and add your own Python code. However, you should avoid changing `entrypoint.sh` (as this requires rebuilding the image for changes to take effect). Additional scripts may be run in `run.sh`.
+Avoid changing `entrypoint.sh` as this requires rebuilding the image for changes to take effect. Add commands to `run.sh` instead.
 
 
 ### How can I prevent my CI/CD pipeline from timing out?
