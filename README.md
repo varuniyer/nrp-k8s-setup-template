@@ -3,7 +3,7 @@
 
 ## Overview
 
-This repository is a template for running Python projects on GPU nodes in [NRP Nautilus](https://nrp.ai/documentation/). Most of the configuration is automated in `config_k8s.py`, which creates a job file and K8s secrets given user-specified arguments. This repository also provides a workflow for building and pushing Docker images to the NRP's GitLab container registry.
+This repository is a template for running Python projects on GPU nodes in [NRP Nautilus](https://nrp.ai/documentation/). Most of the configuration is automated in `config_k8s.py`, which creates a job file and K8s secrets given user-specified arguments. This repository also provides a workflow for building and pushing Docker images to the NRP's GitLab container registry. For the best Nautilus user experience, follow the steps below inside a [Coder](https://coder.nrp-nautilus.io/) workspace. If your Coder workspace has enough resources to meet your needs, you should simply run your code in the workspace and not read any further.
 
 
 ## Prerequisites
