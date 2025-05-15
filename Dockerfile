@@ -11,6 +11,8 @@ COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 SHELL ["/bin/bash", "-c"]
 
 RUN apt-get update && apt-get upgrade -y && \
+    # Install NCCL for multi-GPU support
+    # apt-get install -y libnccl2 && \
     apt-get clean && rm -rf /var/lib/apt/lists/* && \
     useradd -m user
 

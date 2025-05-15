@@ -87,4 +87,4 @@ You only need to wait for the CI/CD pipeline to complete if you've modified `pyp
 
 ### How can I install additional CUDA binaries/libraries?
 
-In the `Dockerfile`, change `base` to either `runtime` (for more CUDA libraries) or `devel` (for all CUDA development tools including `nvcc`). This will contain more CUDA binaries and libraries in your container. If you want to reduce the size of your final image, use a multi-stage build to select which CUDA binaries and libraries to copy into the final image.
+In the `Dockerfile`, change `base` to either `runtime` (for more CUDA libraries) or `devel` (for all CUDA development tools including `nvcc`). You can also install individual packages using `apt-get` in the [`Dockerfile`](https://gitlab.nrp-nautilus.io/varuniyer/k8s-setup-template/-/blob/main/Dockerfile?ref_type=heads#L15).
