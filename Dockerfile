@@ -20,8 +20,7 @@ USER user
 WORKDIR /home/user/work
 COPY pyproject.toml entrypoint.sh ./
 
-# Create virtual environment and set entrypoint permissions
-RUN uv sync -n && \
-    rm pyproject.toml
+# Create virtual environment
+RUN uv sync -n && rm pyproject.toml
 
 ENTRYPOINT ["bash", "entrypoint.sh"]
