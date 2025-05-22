@@ -9,17 +9,19 @@ metadata:
 spec:
   template:
     spec:
-      requiredDuringSchedulingIgnoredDuringExecution:
-        nodeSelectorTerms:
-        - matchExpressions:
-          - key: nvidia.com/cuda.runtime.major
-            operator: In
-            values:
-            - "12"
-          - key: nvidia.com/cuda.runtime.minor
-            operator: In
-            values:
-            - "8"
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: nvidia.com/cuda.runtime.major
+                operator: In
+                values:
+                - "12"
+              - key: nvidia.com/cuda.runtime.minor
+                operator: In
+                values:
+                - "8"
 
       containers:
       - name: "{repo_lower}-runner"
