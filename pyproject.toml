@@ -5,7 +5,7 @@ readme = "README.md"
 requires-python = "==3.10.16"
 
 dependencies = [
-    "torch==2.4.0",
+    "torch==2.7.0",
 ]
 
 [tool.ruff]
@@ -13,13 +13,3 @@ exclude = ["unchecked_code.py", "__pycache__", ".venv"]
 ignore = ["E722"]
 target-version = "py310"
 
-[tool.pyright]
-exclude = ["__pycache__", ".venv"]
-ignore = ["unchecked_code.py"]
-reportMissingTypeStubs = "none"
-reportUnknownMemberType = "none"
-reportUnknownVariableType = "none"
-reportPrivateUsage = "none"
-reportPrivateImportUsage = "none"
-typeCheckingMode = "strict"
-pythonVersion = "3.10"

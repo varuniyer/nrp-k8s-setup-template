@@ -1,5 +1,5 @@
-# Defaults to the base image for CUDA 12.4 to align with the NRP's GPU nodes
-FROM nvidia/cuda:12.4.0-base-ubuntu22.04
+# Defaults to the base image for CUDA 12.8 to align with the NRP's GPU nodes
+FROM nvidia/cuda:12.8.1-base-ubuntu22.04
 
 # Get repository name (passed in as a build argument)
 ARG REPO_NAME
