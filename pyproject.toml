@@ -2,14 +2,15 @@
 name = "k8s-setup-template"
 version = "0.0.0"
 readme = "README.md"
-requires-python = "==3.10.16"
+requires-python = "==3.12.10"
 
 dependencies = [
+    "numpy==2.2.6",
     "torch==2.7.0",
 ]
 
 [tool.ruff]
 exclude = ["unchecked_code.py", "__pycache__", ".venv"]
 ignore = ["E722"]
-target-version = "py310"
+target-version = "py312"
 

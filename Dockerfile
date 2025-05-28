@@ -1,26 +1,34 @@
-# Defaults to the base image for CUDA 12.8 to align with the NRP's GPU nodes
-FROM nvidia/cuda:12.8.1-base-ubuntu22.04
+# Start from the CUDA base image
+FROM nvidia/cuda:12.8.1-base-ubi9
 
-# Get repository name (passed in as a build argument)
+# Declare build arguments
 ARG REPO_NAME
-ENV REPO_NAME=$REPO_NAME
+
+# Set shell
+SHELL ["/bin/bash", "-c"]
 
 # Install uv
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
-SHELL ["/bin/bash", "-c"]
+# Update and add user
+RUN dnf update -y && dnf clean all && useradd -m user
 
-RUN apt-get update && apt-get upgrade -y && \
-    # Install NCCL for multi-GPU support
-    # apt-get install -y libnccl2 && \
-    apt-get clean && rm -rf /var/lib/apt/lists/* && \
-    useradd -m user
-
-USER user
+# Copy dependencies to the working directory and set permissions
 WORKDIR /home/user/work
 COPY pyproject.toml entrypoint.sh ./
+RUN chown -R user:user . && chmod +x entrypoint.sh
 
-# Create virtual environment
-RUN uv sync -n && rm pyproject.toml
+# Set user
+USER user
 
-ENTRYPOINT ["bash", "entrypoint.sh"]
+# Set environment variables
+ENV REPO_NAME=$REPO_NAME
+ENV UV_NO_CACHE=true
+ENV UV_NO_BUILD_ISOLATION=true
+
+# Create virtual environment and install dependencies
+RUN uv sync
+
+# Set entrypoint
+ENTRYPOINT ["./entrypoint.sh"]
+
