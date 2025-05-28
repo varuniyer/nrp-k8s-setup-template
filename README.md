@@ -87,7 +87,7 @@ You only need to wait for the CI/CD pipeline to complete if you've modified `pyp
 
 ### What if I need more CUDA binaries and libraries?
 
-You can modify the [`Dockerfile`](https://gitlab.nrp-nautilus.io/varuniyer/k8s-setup-template/-/blob/main/Dockerfile?ref_type=heads#L1) by replacing `base` with:
+You can modify the [`Dockerfile`](https://gitlab.nrp-nautilus.io/varuniyer/k8s-setup-template/-/blob/main/Dockerfile?ref_type=heads#L2) by replacing `base` with:
 
 - `runtime` for extended CUDA library support
 - `devel` for complete CUDA development environment with `nvcc`
