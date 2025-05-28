@@ -85,6 +85,12 @@ Given the presence of these alternatives (which are not subject to the same usag
 You only need to wait for the CI/CD pipeline to complete if you've modified `pyproject.toml`, the `Dockerfile`, or `.gitlab-ci.yml`, since these changes require rebuilding the container image. You should avoid modifying `entrypoint.sh`, but if you must, you will need to wait for the CI/CD pipeline to complete for your changes to take effect.
 
 
-### How can I install additional CUDA binaries/libraries?
+### What if I need more CUDA binaries and libraries?
 
-In the `Dockerfile`, change `base` to either `runtime` (for more CUDA libraries) or `devel` (for all CUDA development tools including `nvcc`). You can also install individual packages using `dnf install` in the [`Dockerfile`](https://gitlab.nrp-nautilus.io/varuniyer/k8s-setup-template/-/blob/main/Dockerfile?ref_type=heads#L14).
+You can modify the [`Dockerfile`](https://gitlab.nrp-nautilus.io/varuniyer/k8s-setup-template/-/blob/main/Dockerfile?ref_type=heads#L1) by replacing `base` with:
+
+- `runtime` for extended CUDA library support
+- `devel` for complete CUDA development environment with `nvcc`
+
+Install specific packages with `dnf install -y` commands in the [`Dockerfile`](https://gitlab.nrp-nautilus.io/varuniyer/k8s-setup-template/-/blob/main/Dockerfile?ref_type=heads#L14). Add these installation commands after the `dnf update -y` command, but before `dnf clean all`.
+
