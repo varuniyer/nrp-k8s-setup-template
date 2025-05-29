@@ -1,5 +1,5 @@
-# Start from the CUDA base image
-FROM nvidia/cuda:12.8.1-base-ubi9
+# Start from the CUDA devel image
+FROM nvidia/cuda:12.8.1-devel-ubi9
 
 # Declare build arguments
 ARG REPO_NAME
@@ -10,8 +10,17 @@ SHELL ["/bin/bash", "-c"]
 # Install uv
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
-# Update and add user
-RUN dnf update -y && dnf clean all && useradd -m user
+# Install packages (add more if needed)
+RUN dnf install -y --setopt=install_weak_deps=False \
+    git && \
+    # Clean up
+    rpm -e --nodeps dnf dnf-data && \
+    rm -rf /var/cache/dnf /var/lib/dnf && \
+    rm -rf /tmp/* /var/tmp/* /root/.cache && \
+    # Add user
+    useradd -m user && \
+    # Load CUDA libraries
+    ldconfig
 
 # Copy dependencies to the working directory and set permissions
 WORKDIR /home/user/work
@@ -31,4 +40,3 @@ RUN uv sync
 
 # Set entrypoint
 ENTRYPOINT ["./entrypoint.sh"]
-

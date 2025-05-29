@@ -67,7 +67,7 @@ Avoid changing `entrypoint.sh` as this requires rebuilding the image for changes
 
 ### How can I prevent my CI/CD pipeline from timing out?
 
-Remove unnecessary dependencies from both `pyproject.toml` and the `Dockerfile`. If this is not enough, you may extend the timeout in [`.gitlab-ci.yml`](https://gitlab.nrp-nautilus.io/varuniyer/k8s-setup-template/-/blob/main/.gitlab-ci.yml?ref_type=heads#L7).
+Remove unnecessary dependencies from both `pyproject.toml` and the `Dockerfile`. If this is not enough, you may extend the timeout in [`.gitlab-ci.yml` (line 7)](https://gitlab.nrp-nautilus.io/varuniyer/k8s-setup-template/-/blob/main/.gitlab-ci.yml?ref_type=heads#L7).
 
 
 ### Why not include configuration for a [PVC](https://nrp.ai/documentation/userdocs/tutorial/storage/#learning-objectives) (to access [CephFS](https://nrp.ai/documentation/userdocs/storage/ceph/)) or [`rclone`](https://rclone.org/) (to access [Ceph S3](https://nrp.ai/documentation/userdocs/storage/ceph-s3/))?
@@ -85,12 +85,7 @@ Given the presence of these alternatives (which are not subject to the same usag
 You only need to wait for the CI/CD pipeline to complete if you've modified `pyproject.toml`, the `Dockerfile`, or `.gitlab-ci.yml`, since these changes require rebuilding the container image. You should avoid modifying `entrypoint.sh`, but if you must, you will need to wait for the CI/CD pipeline to complete for your changes to take effect.
 
 
-### What if I need more CUDA binaries and libraries?
+### What if I need to install other packages?
 
-You can modify the [`Dockerfile`](https://gitlab.nrp-nautilus.io/varuniyer/k8s-setup-template/-/blob/main/Dockerfile?ref_type=heads#L2) by replacing `base` with:
-
-- `runtime` for extended CUDA library support
-- `devel` for complete CUDA development environment with `nvcc`
-
-Install specific packages with `dnf install -y` commands in the [`Dockerfile`](https://gitlab.nrp-nautilus.io/varuniyer/k8s-setup-template/-/blob/main/Dockerfile?ref_type=heads#L14). Add these installation commands after the `dnf update -y` command, but before `dnf clean all`.
+Additional packages may be listed in the [`Dockerfile` (line 15)](https://gitlab.nrp-nautilus.io/varuniyer/k8s-setup-template/-/blob/main/Dockerfile?ref_type=heads#L15).
 
