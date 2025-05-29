@@ -37,9 +37,9 @@ In your terminal, clone your fork of this repository and `cd` into its directory
 
 4. Modify `your_job.yml` as needed:
     - The job name (line 7)
-    - Environment variables inside your container's `env` section (line 16)
-    - Your container's resource requests/limits (lines 24-34)
-    - The branch your job will pull code from (line 48)
+    - Environment variables inside your container's `env` section (line 36)
+    - Your container's resource requests/limits (lines 42-52)
+    - The branch your job will pull code from (line 66)
 
 5. Once your changes are complete, push them to the current branch of your fork.
 
@@ -67,7 +67,7 @@ Avoid changing `entrypoint.sh` as this requires rebuilding the image for changes
 
 ### How can I prevent my CI/CD pipeline from timing out?
 
-Remove unnecessary dependencies from both `pyproject.toml` and the `Dockerfile`. If this is not enough, you may extend the timeout in [`.gitlab-ci.yml` (line 7)](https://gitlab.nrp-nautilus.io/varuniyer/k8s-setup-template/-/blob/main/.gitlab-ci.yml?ref_type=heads#L7).
+Remove unnecessary dependencies from both `pyproject.toml` and the `Dockerfile`. If this is not enough, you may extend the timeout in [`.gitlab-ci.yml` (line 14)](https://gitlab.nrp-nautilus.io/varuniyer/k8s-setup-template/-/blob/main/.gitlab-ci.yml?ref_type=heads#L14).
 
 
 ### Why not include configuration for a [PVC](https://nrp.ai/documentation/userdocs/tutorial/storage/#learning-objectives) (to access [CephFS](https://nrp.ai/documentation/userdocs/storage/ceph/)) or [`rclone`](https://rclone.org/) (to access [Ceph S3](https://nrp.ai/documentation/userdocs/storage/ceph-s3/))?
