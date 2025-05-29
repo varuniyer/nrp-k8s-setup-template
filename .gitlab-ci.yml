@@ -20,4 +20,4 @@ build-and-push-job:
         - pyproject.toml
         - .gitlab-ci.yml
         - Dockerfile
-        - entrypoint.sh
+

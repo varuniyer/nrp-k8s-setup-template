@@ -9,6 +9,16 @@ dependencies = [
     "torch==2.7.0",
 ]
 
+[tool.uv.sources]
+torch = [
+    { index = "pytorch-gpu" },
+]
+
+[[tool.uv.index]]
+name = "pytorch-gpu"
+url = "https://download.pytorch.org/whl/cu128"
+explicit = true
+
 [tool.ruff]
 exclude = ["unchecked_code.py", "__pycache__", ".venv"]
 ignore = ["E722"]

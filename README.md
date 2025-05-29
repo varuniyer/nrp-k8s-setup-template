@@ -33,13 +33,13 @@ In your terminal, clone your fork of this repository and `cd` into its directory
     - This will automatically start a CI/CD pipeline on GitLab to build your image and push it to the NRP's container registry
     - Navigate to "Build" &rarr; "Jobs" in the sidebar of GitLab's web UI to monitor the build job's progress
 
-3. Add your project's run commands to `run.sh` and add your code to the repo.
+3. Add your project's run commands to `entrypoint.sh` and add your code to the repo.
 
 4. Modify `your_job.yml` as needed:
-    - The job name (line 7)
-    - Environment variables inside your container's `env` section (line 36)
-    - Your container's resource requests/limits (lines 42-52)
-    - The branch your job will pull code from (line 66)
+    - The job name ([line 7](https://gitlab.nrp-nautilus.io/varuniyer/k8s-setup-template/-/blob/main/job_template.yml?ref_type=heads#L7))
+    - Environment variables inside your container's `env` section ([line 33](https://gitlab.nrp-nautilus.io/varuniyer/k8s-setup-template/-/blob/main/job_template.yml?ref_type=heads#L33))
+    - Your container's resource requests/limits ([lines 41](https://gitlab.nrp-nautilus.io/varuniyer/k8s-setup-template/-/blob/main/job_template.yml?ref_type=heads#L41))
+    - The branch your job will pull code from ([line 65](https://gitlab.nrp-nautilus.io/varuniyer/k8s-setup-template/-/blob/main/job_template.yml?ref_type=heads#L65))
 
 5. Once your changes are complete, push them to the current branch of your fork.
 
@@ -48,7 +48,7 @@ In your terminal, clone your fork of this repository and `cd` into its directory
     kubectl create -f your_job.yml
     ```
     - Run `kubectl get pods | grep <job-name>` to get the name of the pod associated with your job
-    - Run `kubectl logs <pod-name>` to view the output of `run.sh`
+    - Run `kubectl logs <pod-name>` to view the output of `entrypoint.sh`
 
 
 ## FAQ
@@ -57,12 +57,10 @@ In your terminal, clone your fork of this repository and `cd` into its directory
 
 Modify the following files along with your Python code:
 
-- `run.sh` runs your code when the container starts
+- `entrypoint.sh` runs your code when the container starts
 - `pyproject.toml` contains Python dependencies
 - `Dockerfile` is used to build the Docker image
 - `your_job.yml` specifies the K8s job configuration
-
-Avoid changing `entrypoint.sh` as this requires rebuilding the image for changes to take effect. Add commands to `run.sh` instead.
 
 
 ### How can I prevent my CI/CD pipeline from timing out?
@@ -82,10 +80,10 @@ Given the presence of these alternatives (which are not subject to the same usag
 
 ### Will I need to wait for the GitLab CI/CD job to finish after each pushed commit for my next K8s job to access new code?
 
-You only need to wait for the CI/CD pipeline to complete if you've modified `pyproject.toml`, the `Dockerfile`, or `.gitlab-ci.yml`, since these changes require rebuilding the container image. You should avoid modifying `entrypoint.sh`, but if you must, you will need to wait for the CI/CD pipeline to complete for your changes to take effect.
+You only need to wait for the CI/CD pipeline to complete if you've modified `pyproject.toml`, the `Dockerfile`, or `.gitlab-ci.yml`, since these changes require rebuilding the container image.
 
 
 ### What if I need to install other packages?
 
-Additional packages may be listed in the [`Dockerfile` (line 15)](https://gitlab.nrp-nautilus.io/varuniyer/k8s-setup-template/-/blob/main/Dockerfile?ref_type=heads#L15).
+Additional packages may be listed in the [`Dockerfile` (line 17)](https://gitlab.nrp-nautilus.io/varuniyer/k8s-setup-template/-/blob/main/Dockerfile?ref_type=heads#L17).
 

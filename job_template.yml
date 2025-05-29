@@ -10,7 +10,6 @@ spec:
   template:
     spec:
       securityContext:
-        runAsUser: 1000
         fsGroup: 1000
 
       affinity:
@@ -37,7 +36,7 @@ spec:
 
         volumeMounts:
           - name: git-repo
-            mountPath: "/home/user/work/{repo}"
+            mountPath: "/home/ubuntu/work/{repo}"
 
         resources:
           limits:
