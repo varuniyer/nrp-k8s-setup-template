@@ -32,9 +32,7 @@ USER user
 
 # Set environment variables
 ENV REPO_NAME=$REPO_NAME
-ENV UV_NO_CACHE=true
-ENV UV_NO_BUILD_ISOLATION=true
-UV_TORCH_BACKEND=cu128
+ENV UV_NO_CACHE=true UV_NO_BUILD_ISOLATION=true UV_TORCH_BACKEND=cu128
 
 # Create virtual environment and install dependencies
 RUN uv sync
