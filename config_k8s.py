@@ -45,14 +45,14 @@ def main():
 
     # Required arguments
     parser.add_argument("--netid", required=True, help="Your NetID")
-    parser.add_argument("--output", required=True, help="Output file name")
+    parser.add_argument("--output-path", required=True, help="Output file path")
 
     # Optional arguments
     parser.add_argument("--pat", default="", help="Your GitLab Personal Access Token")
     parser.add_argument(
         "--dt-username",
         default="",
-        help="GitLab deploy token username (gitlab+deploy-token-XXX)",
+        help="GitLab deploy token username",
     )
     parser.add_argument(
         "--dt-password", default="", help="GitLab deploy token password"
@@ -92,9 +92,23 @@ def main():
 
     # Read template file, fill in values, and write to output file
     job_content = Path("job_template.yml").read_text().format(**template_vars._asdict())
-    Path(args.output).write_text(job_content)
+    Path(args.output_path).write_text(job_content)
 
-    print(f"\nSuccessfully created {args.output}")
+    print(f"\nSuccessfully created {args.output_path}")
+
+    # Validate secrets and parameters
+    gitlab_secret_exists = secret_exists(template_vars.gitlab_secret)
+    registry_secret_exists = secret_exists(template_vars.registry_secret)
+
+    if not gitlab_secret_exists and not args.pat:
+        raise ValueError(
+            f"Secret '{template_vars.gitlab_secret}' does not exist and no PAT provided. Use --pat to provide a Personal Access Token."
+        )
+
+    if not registry_secret_exists and (not args.dt_username or not args.dt_password):
+        raise ValueError(
+            f"Secret '{template_vars.registry_secret}' does not exist and deploy token credentials incomplete. Use --dt-username and --dt-password to provide deploy token credentials."
+        )
 
     # Create GitLab authentication secret if PAT is provided
     if args.pat:
@@ -105,7 +119,7 @@ def main():
             ["--from-literal=pat=" + args.pat],
         )
     else:
-        print("\nSkipping GitLab authentication secret since no PAT was provided")
+        print(f"\nUsing existing GitLab secret: {template_vars.gitlab_secret}")
 
     # Create Docker registry secret if deploy token credentials are provided
     if args.dt_username and args.dt_password:
@@ -120,13 +134,11 @@ def main():
             ],
         )
     else:
-        print(
-            "\nSkipping registry secret since deploy token credentials were not provided"
-        )
+        print(f"\nUsing existing registry secret: {template_vars.registry_secret}")
 
     # Provide instructions for running the job
     print("\nSetup complete! You can now run your job with:")
-    print(f"kubectl create -f {args.output}")
+    print(f"kubectl create -f {args.output_path}")
 
 
 if __name__ == "__main__":

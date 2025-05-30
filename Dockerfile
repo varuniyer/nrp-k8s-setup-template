@@ -36,4 +36,3 @@ RUN uv sync
 
 # Set entrypoint
 ENTRYPOINT exec bash ${REPO_NAME}/entrypoint.sh
-

@@ -23,4 +23,3 @@ explicit = true
 exclude = ["unchecked_code.py", "__pycache__", ".venv"]
 ignore = ["E722"]
 target-version = "py312"
-

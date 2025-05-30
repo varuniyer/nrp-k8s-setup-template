@@ -3,7 +3,7 @@
 
 ## Overview
 
-This repository is a template for running Python projects on GPU nodes in [NRP Nautilus](https://nrp.ai/documentation/). The `config_k8s.py` script automatically generates a K8s job file and secrets based on your inputs. The instructions below provide a workflow for building and pushing Docker images to the NRP's GitLab container registry. You should follow the steps below inside a [Coder](https://coder.nrp-nautilus.io/) workspace or another environment where you can install the dependencies listed in the [Prerequisites](#prerequisites) section. If your workspace has enough resources, you should directly run your code there instead of using this template.
+This repository is a template for running Python projects on GPU nodes in [NRP Nautilus](https://nrp.ai/documentation/). The `config_k8s.py` script automatically generates a K8s job file and secrets based on your inputs. The instructions below provide a workflow for building and pushing Docker images to the NRP's GitLab container registry. You should follow the steps below inside either a [Coder](https://coder.nrp-nautilus.io/) workspace or your own. If your workspace has enough resources, you should directly run your code there instead of using this template.
 
 
 ## Prerequisites
@@ -22,26 +22,29 @@ In your terminal, clone your fork of this repository and `cd` into its directory
 
 1. Generate a K8s job file named `your_job.yml` with the following command:
     ```
-    python config_k8s.py --netid NetID --output your_job.yml --pat GitLabPAT --dt-username DeployTokenUsername --dt-password DeployTokenPassword
+    python config_k8s.py --netid NetID --output-path your_job.yml --pat GitLabPAT --dt-username DeployTokenUsername --dt-password DeployTokenPassword
     ```
-    - `--pat`, `--dt-username`, and `--dt-password` can be omitted if you already created the secrets `NetID-gitlab` and `NetID-RepoName-regcred`
+    - `--pat`, `--dt-username`, and `--dt-password` are only required the first time you run this script
+        - You may pass them in again to modify the values of their corresponding K8s secrets
 
-2. Create a virtualenv for your project:
-    - Update `pyproject.toml` to include your project's dependencies
+2. Update `pyproject.toml` to include your project's Python dependencies:
     - Run `uv sync` to install them in a new virtualenv
-    - Commit and push your changes
-    - This will automatically start a CI/CD pipeline on GitLab to build your image and push it to the NRP's container registry
-    - Navigate to "Build" &rarr; "Jobs" in the sidebar of GitLab's web UI to monitor the build job's progress
+    - Activate the virtualenv with `source .venv/bin/activate`
 
-3. Add your project's run commands to `entrypoint.sh` and add your code to the repo.
+3. Add your Python code to the repo
+    - Place commands to run your code in `entrypoint.sh`
+    - Commit and push your code
 
-4. Modify `your_job.yml` as needed:
+4. Build your container image:
+    - Navigate to "Build" &rarr; "Jobs" in GitLab's web UI to monitor the automatic build process
+    - Expect 30-90 minutes for builds with default dependencies (maximum 3 hours)
+    - **Note**: You only need to re-build the image after modifying `pyproject.toml`, the `Dockerfile`, or `.gitlab-ci.yml`
+
+5. Modify the corresponding lines in `your_job.yml` to suit your needs:
     - The job name ([line 7](https://gitlab.nrp-nautilus.io/varuniyer/k8s-setup-template/-/blob/main/job_template.yml?ref_type=heads#L7))
     - Environment variables inside your container's `env` section ([line 33](https://gitlab.nrp-nautilus.io/varuniyer/k8s-setup-template/-/blob/main/job_template.yml?ref_type=heads#L33))
-    - Your container's resource requests/limits ([lines 41](https://gitlab.nrp-nautilus.io/varuniyer/k8s-setup-template/-/blob/main/job_template.yml?ref_type=heads#L41))
+    - Your container's resource requests/limits ([line 41](https://gitlab.nrp-nautilus.io/varuniyer/k8s-setup-template/-/blob/main/job_template.yml?ref_type=heads#L41))
     - The branch your job will pull code from ([line 65](https://gitlab.nrp-nautilus.io/varuniyer/k8s-setup-template/-/blob/main/job_template.yml?ref_type=heads#L65))
-
-5. Once your changes are complete, push them to the current branch of your fork.
 
 6. Once the CI/CD pipeline completes, run your job with the following command:
     ```
@@ -63,6 +66,11 @@ Modify the following files along with your Python code:
 - `your_job.yml` specifies the K8s job configuration
 
 
+### What if I need to install other packages?
+
+Additional packages may be listed in the [`Dockerfile` (line 17)](https://gitlab.nrp-nautilus.io/varuniyer/k8s-setup-template/-/blob/main/Dockerfile?ref_type=heads#L17).
+
+
 ### How can I prevent my CI/CD pipeline from timing out?
 
 Remove unnecessary dependencies from both `pyproject.toml` and the `Dockerfile`. If this is not enough, you may extend the timeout in [`.gitlab-ci.yml` (line 14)](https://gitlab.nrp-nautilus.io/varuniyer/k8s-setup-template/-/blob/main/.gitlab-ci.yml?ref_type=heads#L14).
@@ -70,7 +78,7 @@ Remove unnecessary dependencies from both `pyproject.toml` and the `Dockerfile`.
 
 ### Why not include configuration for a [PVC](https://nrp.ai/documentation/userdocs/tutorial/storage/#learning-objectives) (to access [CephFS](https://nrp.ai/documentation/userdocs/storage/ceph/)) or [`rclone`](https://rclone.org/) (to access [Ceph S3](https://nrp.ai/documentation/userdocs/storage/ceph-s3/))?
 
-NRP-provided storage has usage restrictions. Notably, even accidentally storing python dependencies in Ceph may result in a temporary ban from accessing Nautilus resources. Instead, use:
+NRP-provided storage has usage restrictions. Notably, even accidentally storing Python dependencies in Ceph may result in a temporary ban from accessing Nautilus resources. Instead, use:
 
 - [Hugging Face Hub](https://huggingface.co/docs/hub/en/index) to efficiently store both [datasets](https://huggingface.co/docs/datasets/en/upload_dataset) and [model checkpoints](https://huggingface.co/docs/transformers/main/en/model_sharing)
 - [wandb](https://docs.wandb.ai/) or [Comet](https://www.comet.com/docs/) to log experiment results
@@ -78,12 +86,6 @@ NRP-provided storage has usage restrictions. Notably, even accidentally storing 
 Given the presence of these alternatives (which are not subject to the same usage restrictions), this template does not support NRP-provided storage.
 
 
-### Will I need to wait for the GitLab CI/CD job to finish after each pushed commit for my next K8s job to access new code?
+### Where can I learn more about using Kubernetes on Nautilus?
 
-You only need to wait for the CI/CD pipeline to complete if you've modified `pyproject.toml`, the `Dockerfile`, or `.gitlab-ci.yml`, since these changes require rebuilding the container image.
-
-
-### What if I need to install other packages?
-
-Additional packages may be listed in the [`Dockerfile` (line 17)](https://gitlab.nrp-nautilus.io/varuniyer/k8s-setup-template/-/blob/main/Dockerfile?ref_type=heads#L17).
-
+Check out the NRP's official [documentation](https://nrp.ai/documentation/) for more information.
