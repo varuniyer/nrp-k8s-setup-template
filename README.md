@@ -42,9 +42,9 @@ In your terminal, clone your fork of this repository and `cd` into its directory
 
 5. Modify the corresponding lines in `your_job.yml` to suit your needs:
     - The job name ([line 7](https://gitlab.nrp-nautilus.io/varuniyer/k8s-setup-template/-/blob/main/job_template.yml?ref_type=heads#L7))
-    - Environment variables inside your container's `env` section ([line 33](https://gitlab.nrp-nautilus.io/varuniyer/k8s-setup-template/-/blob/main/job_template.yml?ref_type=heads#L33))
-    - Your container's resource requests/limits ([line 41](https://gitlab.nrp-nautilus.io/varuniyer/k8s-setup-template/-/blob/main/job_template.yml?ref_type=heads#L41))
-    - The branch your job will pull code from ([line 65](https://gitlab.nrp-nautilus.io/varuniyer/k8s-setup-template/-/blob/main/job_template.yml?ref_type=heads#L65))
+    - Environment variables inside your container's `env` section ([line 34](https://gitlab.nrp-nautilus.io/varuniyer/k8s-setup-template/-/blob/main/job_template.yml?ref_type=heads#L33))
+    - Your container's resource requests/limits ([line 42](https://gitlab.nrp-nautilus.io/varuniyer/k8s-setup-template/-/blob/main/job_template.yml?ref_type=heads#L41))
+    - The branch your job will pull code from ([line 66](https://gitlab.nrp-nautilus.io/varuniyer/k8s-setup-template/-/blob/main/job_template.yml?ref_type=heads#L65))
 
 6. Once the CI/CD pipeline completes, run your job with the following command:
     ```
