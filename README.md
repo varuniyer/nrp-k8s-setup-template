@@ -36,9 +36,9 @@ In your terminal, clone your fork of this repository and `cd` into its directory
     - Commit and push all additions and changes
 
 4. Build your container image:
-    - Navigate to "Build" &rarr; "Jobs" in GitLab's web UI to monitor the automatic build process
+    - The image will automatically build when you push changes that modify `pyproject.toml`, the `Dockerfile`, or `.gitlab-ci.yml`
+    - Navigate to "Build" &rarr; "Jobs" in GitLab's web UI to monitor the build's progress
     - Expect 30-90 minutes for builds with default dependencies (maximum 3 hours)
-    - **Note**: You only need to re-build the image after modifying `pyproject.toml`, the `Dockerfile`, or `.gitlab-ci.yml`
 
 5. Modify the corresponding lines in `your_job.yml` to suit your needs:
     - The job name ([line 7](https://gitlab.nrp-nautilus.io/varuniyer/k8s-setup-template/-/blob/main/job_template.yml?ref_type=heads#L7))
