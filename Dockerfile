@@ -1,9 +1,6 @@
 # Start from the CUDA devel image
 FROM nvidia/cuda:12.8.1-devel-ubuntu24.04
 
-# Declare build arguments
-ARG REPO_NAME
-
 # Set shell
 SHELL ["/bin/bash", "-c"]
 
@@ -28,11 +25,10 @@ RUN chown -R ubuntu:ubuntu /home/ubuntu
 USER ubuntu
 
 # Set environment variables
-ENV REPO_NAME=$REPO_NAME
 ENV UV_NO_CACHE=true UV_NO_BUILD_ISOLATION=true
 
 # Create virtual environment and install dependencies
 RUN uv sync
 
 # Set entrypoint
-ENTRYPOINT exec bash ${REPO_NAME}/entrypoint.sh
+ENTRYPOINT ["bash", "entrypoint.sh"]

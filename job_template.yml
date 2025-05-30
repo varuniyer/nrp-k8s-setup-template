@@ -30,6 +30,7 @@ spec:
       containers:
       - name: "{repo_lower}-runner"
         image: "{registry_server}/{username}/{repo_lower}:latest"
+        workingDir: "/home/ubuntu/work/{repo}"
 
         env:
         - name: "MY_ENV_VAR"

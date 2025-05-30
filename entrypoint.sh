@@ -1,8 +1,9 @@
 #!/bin/bash
 
-source .venv/bin/activate
+# Activate virtual environment
+source ../.venv/bin/activate
 
-cp pyproject.toml uv.lock $REPO_NAME
-cd $REPO_NAME
+# Copy dependencies from parent directory
+cp ../pyproject.toml ../uv.lock .
 
 python test_script.py
