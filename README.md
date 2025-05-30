@@ -31,9 +31,9 @@ In your terminal, clone your fork of this repository and `cd` into its directory
     - Run `uv sync` to install them in a new virtualenv
     - Activate the virtualenv with `source .venv/bin/activate`
 
-3. Add your Python code to the repo
+3. Add your Python code to the repo:
     - Place commands to run your code in `entrypoint.sh`
-    - Commit and push your code
+    - Commit and push all additions and changes
 
 4. Build your container image:
     - Navigate to "Build" &rarr; "Jobs" in GitLab's web UI to monitor the automatic build process
