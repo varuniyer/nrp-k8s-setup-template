@@ -11,10 +11,16 @@ COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 RUN apt-get update && apt-get upgrade -y --no-install-recommends && \
     # Install packages
     apt-get install -y --no-install-recommends \ 
-    btop && \
+    locales btop && \
+    # Set locale
+    sed -i '/en_US.UTF-8/s/^# //g' /etc/locale.gen && \
+    locale-gen && \
     # Clean up
     apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+# Set locale environment variables
+ENV LANG=en_US.UTF-8 LANGUAGE=en_US:en LC_ALL=en_US.UTF-8
 
 # Copy dependencies to the working directory and set permissions
 WORKDIR /home/ubuntu/work
