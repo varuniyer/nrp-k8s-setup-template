@@ -1,0 +1,96 @@
+apiVersion: batch/v1
+kind: Job
+
+metadata:
+  labels:
+    app: "k8s-setup-template"
+  name: "viyer9-k8s-setup-template"
+
+spec:
+  template:
+    spec:
+      securityContext:
+        fsGroup: 1000
+        runAsUser: 1000
+
+      affinity:
+        nodeAffinity:         
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: nvidia.com/cuda.runtime.major
+                operator: In
+                values:
+                - "12"
+              - key: nvidia.com/cuda.runtime.minor
+                operator: In
+                values:
+                - "8"
+              - key: nvidia.com/gpu.product
+                operator: In
+                values:
+                - NVIDIA-GeForce-GTX-1070
+
+      containers:
+      - name: "k8s-setup-template-runner"
+        image: "gitlab-registry.nrp-nautilus.io/varuniyer/k8s-setup-template:latest"
+        workingDir: "/home/ubuntu/work/k8s-setup-template"
+
+        env:
+        - name: "MY_ENV_VAR"
+          value: "my_value"
+
+        volumeMounts:
+          - name: git-repo
+            mountPath: "/home/ubuntu/work/k8s-setup-template"
+
+        resources:
+          limits:
+            nvidia.com/gpu: "1"
+            memory: 2Gi
+            cpu: "1"
+            ephemeral-storage: 4Gi
+          requests:
+            nvidia.com/gpu: "1"
+            memory: 2Gi
+            cpu: "1"
+            ephemeral-storage: 4Gi
+            
+      initContainers:
+      - name: init-clone-repo
+        image: alpine/git
+        env:
+        - name: GITLAB_PAT
+          valueFrom:
+            secretKeyRef:
+              name: "viyer9-gitlab"
+              key: pat
+        args:
+          - clone
+          - -b
+          - "main"
+          - --single-branch
+          - https://varuniyer:$(GITLAB_PAT)@gitlab.nrp-nautilus.io/varuniyer/k8s-setup-template.git
+          - "/opt/k8s-setup-template"
+        resources:
+          limits:
+            memory: 100Mi
+            cpu: "100m"
+            ephemeral-storage: 100Mi
+          requests:
+            memory: 100Mi
+            cpu: "100m"
+            ephemeral-storage: 100Mi
+        volumeMounts:
+          - name: git-repo
+            mountPath: "/opt/k8s-setup-template"
+      volumes:
+      - name: git-repo
+        emptyDir: {}
+
+      imagePullSecrets:
+      - name: "viyer9-k8s-setup-template-regcred"
+
+      restartPolicy: Never
+  
+  backoffLimit: 0 

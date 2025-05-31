@@ -11,7 +11,7 @@ COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 RUN apt-get update && apt-get upgrade -y --no-install-recommends && \
     # Install packages
     apt-get install -y --no-install-recommends \ 
-    htop && \
+    btop && \
     # Clean up
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
