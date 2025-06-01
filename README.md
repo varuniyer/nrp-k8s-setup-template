@@ -22,7 +22,7 @@ This repository is a template for running Python projects on GPU nodes in [NRP N
 Follow these steps in your terminal:
 
 1. **Clone your fork and enter it** with the following command:
-    ```
+    ```bash
     git clone ssh://git@gitlab-ssh.nrp-nautilus.io:30622/<GITLAB_USERNAME>/<REPO_NAME>.git && cd <REPO_NAME>
     ```
 
