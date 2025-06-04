@@ -97,7 +97,7 @@ Modify the following files along with your Python code:
 
 ### What if I need to install other packages?
 
-Additional packages may be listed in the [`Dockerfile` (line 14)](https://gitlab.nrp-nautilus.io/varuniyer/k8s-setup-template/-/blob/main/Dockerfile?ref_type=heads#L14).
+Additional packages may be listed in the [`Dockerfile` (line 12)](https://gitlab.nrp-nautilus.io/varuniyer/k8s-setup-template/-/blob/main/Dockerfile?ref_type=heads#L12).
 
 
 ### How can I prevent my CI/CD pipeline from timing out?
