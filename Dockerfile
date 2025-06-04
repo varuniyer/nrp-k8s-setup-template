@@ -7,10 +7,8 @@ SHELL ["/bin/bash", "-c"]
 # Install uv
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
-# Upgrade packages
-RUN apt-get update && apt-get upgrade -y --no-install-recommends && \
-    # Install packages
-    apt-get install -y --no-install-recommends \ 
+# Install packages
+RUN apt-get update && apt-get install -y --no-install-recommends \ 
     locales btop && \
     # Set locale
     sed -i '/en_US.UTF-8/s/^# //g' /etc/locale.gen && \
