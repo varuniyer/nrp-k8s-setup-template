@@ -36,10 +36,6 @@ spec:
         - name: "MY_ENV_VAR"
           value: "my_value"
 
-        volumeMounts:
-          - name: git-repo
-            mountPath: "/home/ubuntu/work/{repo}"
-
         resources:
           limits:
             nvidia.com/gpu: "1"
@@ -51,7 +47,21 @@ spec:
             memory: 2Gi
             cpu: "1"
             ephemeral-storage: 4Gi
-            
+
+        volumeMounts:
+          - name: git-repo
+            mountPath: "/home/ubuntu/work/{repo}"
+          - name: dshm
+            mountPath: "/dev/shm"
+
+      volumes:
+      - name: git-repo
+        emptyDir: {{}}
+      - name: dshm
+        emptyDir:
+          medium: Memory
+          sizeLimit: 2Gi
+
       initContainers:
       - name: init-clone-repo
         image: alpine/git
@@ -80,9 +90,6 @@ spec:
         volumeMounts:
           - name: git-repo
             mountPath: "/opt/{repo}"
-      volumes:
-      - name: git-repo
-        emptyDir: {{}}
 
       imagePullSecrets:
       - name: "{registry_secret}"
