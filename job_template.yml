@@ -49,18 +49,18 @@ spec:
             ephemeral-storage: 4Gi
 
         volumeMounts:
-          - name: git-repo
-            mountPath: "/home/ubuntu/work/{repo}"
           - name: dshm
             mountPath: "/dev/shm"
+          - name: git-repo
+            mountPath: "/home/ubuntu/work/{repo}"
 
       volumes:
-      - name: git-repo
-        emptyDir: {{}}
       - name: dshm
         emptyDir:
           medium: Memory
           sizeLimit: 2Gi
+      - name: git-repo
+        emptyDir: {{}}
 
       initContainers:
       - name: init-clone-repo
