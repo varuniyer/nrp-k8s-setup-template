@@ -56,8 +56,7 @@ Follow these steps in your terminal:
     - The job name ([line 7](https://gitlab.nrp-nautilus.io/varuniyer/k8s-setup-template/-/blob/main/job_template.yml?ref_type=heads#L7))
     - Environment variables inside your container's `env` section ([line 35](https://gitlab.nrp-nautilus.io/varuniyer/k8s-setup-template/-/blob/main/job_template.yml?ref_type=heads#L35))
     - Your container's resource requests/limits ([line 39](https://gitlab.nrp-nautilus.io/varuniyer/k8s-setup-template/-/blob/main/job_template.yml?ref_type=heads#L39))
-    - Your container's shared memory limit ([line 61](https://gitlab.nrp-nautilus.io/varuniyer/k8s-setup-template/-/blob/main/job_template.yml?ref_type=heads#L61))
-    - The branch your job will pull code from ([line 77](https://gitlab.nrp-nautilus.io/varuniyer/k8s-setup-template/-/blob/main/job_template.yml?ref_type=heads#L77))
+    - The branch your job will pull code from ([line 76](https://gitlab.nrp-nautilus.io/varuniyer/k8s-setup-template/-/blob/main/job_template.yml?ref_type=heads#L76))
 
 7. **Run your job** with the following command:
     ```bash
