@@ -11,7 +11,6 @@ spec:
     spec:
       securityContext:
         fsGroup: 1000
-        runAsUser: 1000
 
       affinity:
         nodeAffinity:
