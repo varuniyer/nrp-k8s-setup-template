@@ -14,7 +14,7 @@ build-and-push-job:
   timeout: 3h
   stage: build-and-push
   script:
-  - cd $CI_PROJECT_DIR && docker buildx build -f Dockerfile --push --provenance=false --platform linux/amd64 -t $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA -t $CI_REGISTRY_IMAGE:latest .
+  - cd $CI_PROJECT_DIR && docker buildx build -f Dockerfile --push --network=host --provenance=false --platform linux/amd64 -t $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA -t $CI_REGISTRY_IMAGE:latest .
   rules:
     - changes:
         - pyproject.toml
