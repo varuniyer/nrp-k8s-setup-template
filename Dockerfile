@@ -3,15 +3,18 @@ FROM nvidia/cuda:12.8.1-devel-ubuntu24.04
 
 # Set shell
 SHELL ["/bin/bash", "-c"]
+ENV DEBIAN_FRONTEND=noninteractive
 
 # Install uv
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
 # Mount tmpfs to reduce the final image size
 RUN --mount=type=tmpfs,dst=/tmp --mount=type=tmpfs,dst=/var/tmp \
+    # Ensure apt uses IPv4
+    printf 'Acquire::ForceIPv4 "true";\nAcquire::Retries "5";\n' > /etc/apt/apt.conf.d/99ci-apt && \
     # Install packages
     apt-get update && apt-get install -y --no-install-recommends \ 
-    locales btop && \
+    locales && \
     # Set locale
     sed -i '/en_US.UTF-8/s/^# //g' /etc/locale.gen && \
     locale-gen && \

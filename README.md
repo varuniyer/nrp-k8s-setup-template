@@ -72,13 +72,13 @@ Once your job is running, follow these steps to monitor its performance and trou
     - Run `kubectl get pods | grep <JOB_NAME>` to get the name of the pod associated with your job
     - Run `kubectl logs <POD_NAME>` to view your job's output and check for errors
     - Run `kubectl describe pod <POD_NAME>` to get detailed information about the pod's status and events
-
-2. **Monitor resource usage from inside the pod**:
     - Run `kubectl exec -it <POD_NAME> -- /bin/bash` to enter a shell in your (actively running) pod
-        - Run `btop` to monitor CPU, GPU, memory, and networking usage in real-time
-        - Run `nvidia-smi` to get more detailed GPU usage information
 
-3. **Monitor externally using Grafana dashboards**:
+2. **Monitor resource usage using `kubectl`**:
+    - Run `kubectl top <POD_NAME>` to monitor CPU/RAM utilization
+    - Run `kubectl exec -it <POD_NAME> -- nvidia-smi` to monitor GPU utilization
+
+3. **Monitor resource usage externally using Grafana dashboards**:
     - [CPU, memory, and networking usage](https://grafana.nrp-nautilus.io/d/85a562078cdf77779eaa1add43ccec1e/kubernetes-compute-resources-namespace-pods?orgId=1&from=now-3h&to=now&refresh=10s)
     - [GPU utilization](https://grafana.nrp-nautilus.io/d/dRG9q0Ymz/k8s-compute-resources-namespace-gpus?orgId=1&from=now-3h&to=now&refresh=30s)
 
