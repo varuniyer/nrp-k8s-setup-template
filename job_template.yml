@@ -17,14 +17,10 @@ spec:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
             - matchExpressions:
-              - key: nvidia.com/cuda.runtime.major
+              - key: nvidia.com/gpu.product
                 operator: In
                 values:
-                - "12"
-              - key: nvidia.com/cuda.runtime.minor
-                operator: In
-                values:
-                - "8"
+                - NVIDIA-GeForce-RTX-3090
 
       containers:
       - name: "{repo_lower}-runner"

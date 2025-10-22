@@ -1,22 +1,17 @@
-image: docker:git
-
-default:
-  tags:
-  - docker
-  before_script:
-  - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-  - docker buildx create --driver docker-container --bootstrap --use
+image: ghcr.io/kaniko-build/dist/osscontainertools-kaniko/executor:latest-debug
 
 stages:
 - build-and-push
 
 build-and-push-job:
-  timeout: 3h
   stage: build-and-push
+  variables:
+    GODEBUG: "http2client=0"
   script:
-  - cd $CI_PROJECT_DIR && docker buildx build -f Dockerfile --push --network=host --provenance=false --platform linux/amd64 -t $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA -t $CI_REGISTRY_IMAGE:latest .
+  - echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$CI_REGISTRY_USER\",\"password\":\"$CI_REGISTRY_PASSWORD\"}}}" > /kaniko/.docker/config.json
+  - /kaniko/executor --cache=true --push-retry=10 --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Dockerfile --destination $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA --destination $CI_REGISTRY_IMAGE:latest
   rules:
-    - changes:
-        - pyproject.toml
-        - .gitlab-ci.yml
-        - Dockerfile
+  - changes:
+    - pyproject.toml
+    - .gitlab-ci.yml
+    - Dockerfile

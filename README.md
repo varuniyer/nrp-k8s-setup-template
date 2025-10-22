@@ -54,9 +54,9 @@ Follow these steps in your terminal:
 
 6. **Modify the corresponding lines** in `your_job.yml` to suit your needs:
     - The job name ([line 7](https://gitlab.nrp-nautilus.io/varuniyer/k8s-setup-template/-/blob/main/job_template.yml?ref_type=heads#L7))
-    - Environment variables inside your container's `env` section ([line 35](https://gitlab.nrp-nautilus.io/varuniyer/k8s-setup-template/-/blob/main/job_template.yml?ref_type=heads#L35))
-    - Your container's resource requests/limits ([line 39](https://gitlab.nrp-nautilus.io/varuniyer/k8s-setup-template/-/blob/main/job_template.yml?ref_type=heads#L39))
-    - The branch your job will pull code from ([line 76](https://gitlab.nrp-nautilus.io/varuniyer/k8s-setup-template/-/blob/main/job_template.yml?ref_type=heads#L76))
+    - Environment variables inside your container's `env` section ([line 30](https://gitlab.nrp-nautilus.io/varuniyer/k8s-setup-template/-/blob/main/job_template.yml?ref_type=heads#L30))
+    - Your container's resource requests/limits ([line 34](https://gitlab.nrp-nautilus.io/varuniyer/k8s-setup-template/-/blob/main/job_template.yml?ref_type=heads#L34))
+    - The branch your job will pull code from ([line 73](https://gitlab.nrp-nautilus.io/varuniyer/k8s-setup-template/-/blob/main/job_template.yml?ref_type=heads#L73))
 
 7. **Run your job** with the following command:
     ```bash
