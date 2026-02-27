@@ -5,8 +5,8 @@ readme = "README.md"
 requires-python = "==3.12.10"
 
 dependencies = [
-    "numpy==2.3.4",
-    "torch==2.8.0",
+    "numpy==2.2.6",
+    "torch==2.9.0",
 ]
 
 [tool.uv.sources]
@@ -14,7 +14,7 @@ torch = [{ index = "pytorch-gpu" }]
 
 [[tool.uv.index]]
 name = "pytorch-gpu"
-url = "https://download.pytorch.org/whl/cu129"
+url = "https://download.pytorch.org/whl/cu128"
 explicit = true
 
 [tool.ruff]
