@@ -9,9 +9,6 @@ metadata:
 spec:
   template:
     spec:
-      securityContext:
-        fsGroup: 1000
-
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -65,13 +62,9 @@ spec:
             secretKeyRef:
               name: "{gitlab_secret}"
               key: pat
+        command: ["/bin/sh", "-c"]
         args:
-          - clone
-          - -b
-          - "{branch}"
-          - --single-branch
-          - https://{username}:$(GITLAB_PAT)@gitlab.nrp-nautilus.io/{username}/{repo}.git
-          - "/opt/{repo}"
+        - git clone -b {branch} --single-branch https://{username}:$GITLAB_PAT@gitlab.nrp-nautilus.io/{username}/{repo}.git /opt/{repo} && chown -R 1000:1000 /opt/{repo}
         resources:
           limits:
             memory: 500Mi
