@@ -3,7 +3,7 @@
 
 ## Overview
 
-This repository is a template for running Python projects on GPU nodes in [NRP Nautilus](https://nrp.ai/documentation/). Only use this template when more conveniently available resources fail to meet your needs. `config_k8s.py` is a script that automatically generates a K8s job file and secrets based on your inputs. The instructions below provide a workflow for building and pushing Docker images to the NRP's GitLab container registry. You should follow the steps below inside either a [Coder](https://coder.nrp-nautilus.io/) workspace or your own.
+This repository is a template for running Python projects on GPU nodes in [NRP Nautilus](https://nrp.ai/documentation/). Only use this template when more conveniently available resources fail to meet your needs. `launch_job.py` is a script that automatically creates K8s secrets based on your inputs, fills in `job_template.yml`, and launches the resulting job. The instructions below provide a workflow for building and pushing Docker images to the NRP's GitLab container registry. You should follow the steps below inside either a [Coder](https://coder.nrp-nautilus.io/) workspace or your own.
 
 
 ## Prerequisites
@@ -26,22 +26,15 @@ Follow these steps in your terminal:
     git clone ssh://git@gitlab-ssh.nrp-nautilus.io:30622/<GITLAB_USERNAME>/<REPO_NAME>.git && cd <REPO_NAME>
     ```
 
-2. **Generate a K8s job file** named `your_job.yml` with the following command:
-    ```bash
-    python config_k8s.py --netid <NET_ID> --output-path your_job.yml --pat <GITLAB_PAT> --dt-username <DEPLOY_TOKEN_USERNAME> --dt-password <DEPLOY_TOKEN_PASSWORD>
-    ```
-    - `--pat`, `--dt-username`, and `--dt-password` are only required the first time you run this script
-        - You may pass them in again to modify the values of their corresponding K8s secrets
-
-3. **Update `pyproject.toml`** to include your project's Python dependencies:
+2. **Update `pyproject.toml`** to include your project's Python dependencies:
     - Run `uv sync` to install them in a new virtualenv
     - Activate the virtualenv with `source .venv/bin/activate`
 
-4. **Add your Python code** to the repo:
+3. **Add your Python code** to the repo:
     - Place commands to run your code in `entrypoint.sh`
     - Commit and push all additions and changes
 
-5. **Build your container image**:
+4. **Build your container image**:
     - A build job will automatically trigger when you push commits that modify any of the following:
         - `pyproject.toml`
         - `Dockerfile`
@@ -52,16 +45,18 @@ Follow these steps in your terminal:
     
     
 
-6. **Modify the corresponding lines** in `your_job.yml` to suit your needs:
+5. **Modify the corresponding lines** in `job_template.yml` to suit your needs:
     - The job name ([line 7](https://gitlab.nrp-nautilus.io/varuniyer/k8s-setup-template/-/blob/main/job_template.yml?ref_type=heads#L7))
     - Environment variables inside your container's `env` section ([line 30](https://gitlab.nrp-nautilus.io/varuniyer/k8s-setup-template/-/blob/main/job_template.yml?ref_type=heads#L30))
     - Your container's resource requests/limits ([line 34](https://gitlab.nrp-nautilus.io/varuniyer/k8s-setup-template/-/blob/main/job_template.yml?ref_type=heads#L34))
     - The branch your job will pull code from ([line 73](https://gitlab.nrp-nautilus.io/varuniyer/k8s-setup-template/-/blob/main/job_template.yml?ref_type=heads#L73))
 
-7. **Run your job** with the following command:
+6. **Launch your job** with the following command:
     ```bash
-    kubectl create -f your_job.yml
+    python launch_job.py --netid <NET_ID> --pat <GITLAB_PAT> --dt-username <DEPLOY_TOKEN_USERNAME> --dt-password <DEPLOY_TOKEN_PASSWORD>
     ```
+    - `--pat`, `--dt-username`, and `--dt-password` are only required the first time you run this script
+        - You may pass them in again to modify the values of their corresponding K8s secrets
 
 
 ## Monitoring and Troubleshooting
@@ -92,7 +87,7 @@ Modify the following files along with your Python code:
 - `entrypoint.sh` runs your code when the container starts
 - `pyproject.toml` contains Python dependencies
 - `Dockerfile` is used to build the Docker image
-- `your_job.yml` specifies the K8s job configuration
+- `job_template.yml` specifies the K8s job configuration
 
 
 ### What if I need to install other packages?

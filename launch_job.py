@@ -1,7 +1,8 @@
-"""Fills in job_template.yml with user-specified values"""
+"""Fills in job_template.yml with user-specified values and launches the job"""
 
 import argparse
 from pathlib import Path
+from string import Template
 from subprocess import run
 from typing import NamedTuple
 
@@ -40,12 +41,11 @@ class TemplateVars(NamedTuple):
 def main():
     # Set up command line argument parser
     parser = argparse.ArgumentParser(
-        description="Fills in job_template.yml with user-specified values"
+        description="Fills in job_template.yml with user-specified values and launches the job"
     )
 
     # Required arguments
     parser.add_argument("--netid", required=True, help="Your NetID")
-    parser.add_argument("--output-path", required=True, help="Output file path")
 
     # Optional arguments
     parser.add_argument("--pat", default="", help="Your GitLab Personal Access Token")
@@ -90,11 +90,10 @@ def main():
         "gitlab-registry.nrp-nautilus.io",
     )
 
-    # Read template file, fill in values, and write to output file
-    job_content = Path("job_template.yml").read_text().format(**template_vars._asdict())
-    Path(args.output_path).write_text(job_content)
-
-    print(f"\nSuccessfully created {args.output_path}")
+    # Read template file and fill in values
+    job_content = Template(Path("job_template.yml").read_text()).substitute(
+        **template_vars._asdict()
+    )
 
     # Validate secrets and parameters
     gitlab_secret_exists = secret_exists(template_vars.gitlab_secret)
@@ -136,9 +135,9 @@ def main():
     else:
         print(f"\nUsing existing registry secret: {template_vars.registry_secret}")
 
-    # Provide instructions for running the job
-    print("\nSetup complete! You can now run your job with:")
-    print(f"kubectl create -f {args.output_path}")
+    # Launch the job by piping the filled-in template to kubectl
+    print("\nLaunching job...")
+    run(["kubectl", "create", "-f", "-"], input=job_content.encode(), check=True)
 
 
 if __name__ == "__main__":

@@ -3,8 +3,8 @@ kind: Job
 
 metadata:
   labels:
-    app: "{repo}"
-  name: "{netid}-{repo_lower}"
+    app: "${repo}"
+  name: "${netid}-${repo_lower}"
 
 spec:
   template:
@@ -20,9 +20,9 @@ spec:
                 - NVIDIA-GeForce-RTX-3090
 
       containers:
-      - name: "{repo_lower}-runner"
-        image: "{registry_server}/{username}/{repo_lower}:latest"
-        workingDir: "/home/ubuntu/work/{repo}"
+      - name: "${repo_lower}-runner"
+        image: "${registry_server}/${username}/${repo_lower}:latest"
+        workingDir: "/home/ubuntu/work/${repo}"
 
         env:
         - name: "MY_ENV_VAR"
@@ -44,14 +44,14 @@ spec:
           - name: dshm
             mountPath: "/dev/shm"
           - name: git-repo
-            mountPath: "/home/ubuntu/work/{repo}"
+            mountPath: "/home/ubuntu/work/${repo}"
 
       volumes:
       - name: dshm
         emptyDir:
           medium: Memory
       - name: git-repo
-        emptyDir: {{}}
+        emptyDir: {}
 
       initContainers:
       - name: init-clone-repo
@@ -60,11 +60,11 @@ spec:
         - name: GITLAB_PAT
           valueFrom:
             secretKeyRef:
-              name: "{gitlab_secret}"
+              name: "${gitlab_secret}"
               key: pat
         command: ["/bin/sh", "-c"]
         args:
-        - git clone -b {branch} --single-branch https://{username}:$GITLAB_PAT@gitlab.nrp-nautilus.io/{username}/{repo}.git /opt/{repo} && chown -R 1000:1000 /opt/{repo}
+        - git clone -b ${branch} --single-branch https://${username}:$$GITLAB_PAT@gitlab.nrp-nautilus.io/${username}/${repo}.git /opt/${repo} && chown -R 1000:1000 /opt/${repo}
         resources:
           limits:
             memory: 500Mi
@@ -76,11 +76,11 @@ spec:
             ephemeral-storage: 500Mi
         volumeMounts:
           - name: git-repo
-            mountPath: "/opt/{repo}"
+            mountPath: "/opt/${repo}"
 
       imagePullSecrets:
-      - name: "{registry_secret}"
+      - name: "${registry_secret}"
 
       restartPolicy: Never
-  
-  backoffLimit: 0 
+
+  backoffLimit: 0
